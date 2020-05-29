@@ -6,11 +6,18 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.<br />
+Runs the react frontend in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
+
+### `yarn start-api`
+
+Runs the flask backend in the development mode.<br />
+
+Edits don't automatically trigger a reload.<br />The app has to be restarted manually.<br />
+Request log and errors in the console.
 
 ### `yarn test`
 
