@@ -51,9 +51,9 @@ function Landing(props) {
         // The response to posting a new user is the user object itself as per REST guidlines
         // The backend now sends the user object with an added "token" attribute to avoid having to make two requests
         axios.post("http://localhost:5000/api/users", {
-        signupUsername,
-        email,
-        signupPassword
+        username: signupUsername,
+        email: email,
+        password: signupPassword
         }).then(result => {
         if (result.status === 201) {
             setAuthTokens({ 'token': result.data.token })
@@ -61,6 +61,7 @@ function Landing(props) {
             setUserData(result.data)
             setLoggedIn(true)
         } else {
+            console.log('This is the first error catch')
             setIsError(true)
         }
         }).catch(e => {
