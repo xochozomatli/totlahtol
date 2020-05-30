@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { Link, Redirect } from 'react-router-dom'
 import { Card, Logo, Form, Input, Button, Error } from "../components/AuthForms"
-import { useAuth } from './context/auth'
-import { useUser } from './context/user'
+import { useAuth } from '../context/auth'
+import { useUser, UserContext } from '../context/user'
 
 function Landing(props) {
     const [isLoggedIn, setLoggedIn] = useState(false);
@@ -16,11 +16,12 @@ function Landing(props) {
     //const referer = props.location.state.referer || '/';
 
     function postLogin() {
-        axios.post("https://localhost:5000/api/tokens", {
+        axios.post("http://localhost:5000/api/tokens", {
         username,
         password
         }).then(result => {
             if (result.status === 200) {
+                console.log("token gotten!")
                 setAuthTokens(result.data);
                 return result.data
             } else {
@@ -28,7 +29,7 @@ function Landing(props) {
                 Promise.reject()
             }
         }).then(token => { 
-            axios.get("https://localhost:5000/api/users/current/"+token)
+            axios.get("http://localhost:5000/api/users/current/"+token)
         }).then(result => {
             if (result.status === 200) {
                 setCurrentUser(result.data)
@@ -44,7 +45,7 @@ function Landing(props) {
     function postSignup() {
         // The response to posting a new user is the user object itself as per REST guidlines
         // The backend now sends the user object with an added "token" attribute to avoid having to make two requests
-        axios.post("https://localhost:5000/api/users", {
+        axios.post("http://localhost:5000/api/users", {
         username,
         email,
         password
@@ -67,13 +68,15 @@ function Landing(props) {
     }
 
     return (
+        <div>
+        <h2 style={{textAlign: 'center'}}>Totlahtol</h2>
         <Card>
             <Form>
                 <Input
                 type="username"
                 value={username}
                 onChange={e => {
-                    setUserName(e.target.value);
+                    setUsername(e.target.value);
                 }}
                 placeholder="username"
                 />
@@ -97,7 +100,7 @@ function Landing(props) {
                 onChange={e => {
                     setEmail(e.target.value);
                 }}
-                placeholder="username"
+                placeholder="email"
                 />
                 <Input
                 type="username"
@@ -119,6 +122,8 @@ function Landing(props) {
             </Form>
                 { isError &&<Error></Error> }
         </Card>
-
+    </div>
     )
 }
+
+export default Landing
