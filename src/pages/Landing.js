@@ -3,42 +3,47 @@ import axios from 'axios'
 import { Link, Redirect } from 'react-router-dom'
 import { Card, Logo, Form, Input, Button, Error } from "../components/AuthForms"
 import { useAuth } from '../context/auth'
-import { useUser, UserContext } from '../context/user'
+import { useUser } from '../context/user'
 
 function Landing(props) {
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
     const [email, setEmail] = useState("")
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [signupUsername, setSignupUsername] = useState("");
+    const [signupPassword, setSignupPassword] = useState("");
+    const [loginUsername, setLoginUsername] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
     const { setAuthTokens } = useAuth();
-    const { setCurrentUser } = useUser();
+    const { setUserData } = useUser();
     //const referer = props.location.state.referer || '/';
 
     function postLogin() {
-        axios.post("http://localhost:5000/api/tokens", {
-        username,
-        password
+        axios.post("http://localhost:5000/api/tokens", {}, {
+            auth: {
+                username: loginUsername,
+                password: loginPassword
+            }
         }).then(result => {
             if (result.status === 200) {
-                console.log("token gotten!")
+                console.log(result.data.token)
                 setAuthTokens(result.data);
                 return result.data
             } else {
                 setIsError(true)
                 Promise.reject()
             }
-        }).then(token => { 
-            axios.get("http://localhost:5000/api/users/current/"+token)
+        }).then(data => { 
+            const bearer = "Bearer ".concat(data.token)
+            return axios.get("http://localhost:5000/api/users/current/"+data.token, { headers: { Authorization: bearer } })
         }).then(result => {
             if (result.status === 200) {
-                setCurrentUser(result.data)
+                setUserData(result.data)
                 setLoggedIn(true);
             } else {
                 setIsError(true)
             }
         }).catch(e => {
-        setIsError(true);
+            setIsError(true);
         });
     }
 
@@ -46,14 +51,14 @@ function Landing(props) {
         // The response to posting a new user is the user object itself as per REST guidlines
         // The backend now sends the user object with an added "token" attribute to avoid having to make two requests
         axios.post("http://localhost:5000/api/users", {
-        username,
+        signupUsername,
         email,
-        password
+        signupPassword
         }).then(result => {
         if (result.status === 201) {
             setAuthTokens({ 'token': result.data.token })
             delete result.data.token
-            setCurrentUser(result.data)
+            setUserData(result.data)
             setLoggedIn(true)
         } else {
             setIsError(true)
@@ -74,17 +79,17 @@ function Landing(props) {
             <Form>
                 <Input
                 type="username"
-                value={username}
+                value={loginUsername}
                 onChange={e => {
-                    setUsername(e.target.value);
+                    setLoginUsername(e.target.value);
                 }}
                 placeholder="username"
                 />
                 <Input
                 type="password"
-                value={password}
+                value={loginPassword}
                 onChange={e => {
-                    setPassword(e.target.value);
+                    setLoginPassword(e.target.value);
                 }}
                 placeholder="password"
                 />
@@ -104,17 +109,17 @@ function Landing(props) {
                 />
                 <Input
                 type="username"
-                value={username}
+                value={signupUsername}
                 onChange={e => {
-                    setUsername(e.target.value);
+                    setSignupUsername(e.target.value);
                 }}
                 placeholder="username"
                 />
                 <Input
                 type="password"
-                value={password}
+                value={signupPassword}
                 onChange={e => {
-                    setPassword(e.target.value);
+                    setSignupPassword(e.target.value);
                 }}
                 placeholder="password"
                 />

@@ -17,7 +17,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <UserContext.Provider value={{ userData, setUserdata: setUserData }}>
+      <UserContext.Provider value={{ userData, setUserData: setUserData }}>
       <Router>
         <div>
           <PrivateRoute exact path='/' component={Feed} />
