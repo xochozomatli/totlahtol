@@ -18,7 +18,7 @@ cors = CORS() # Rules to prevent (or allow, rip) cross site scripting
 def create_app(config_class=Config):
     """Defines the "app factory" that's run in totlahtol.py to create the app instance. 
        Adds extensions e.g. loads configuration, initializes database, loads flask_migrate, mail, cors policy, and the api blueprint.
-       Two thirds of this function is mail and loggin code that isn't even used, so just ignore it.
+       Two thirds of this function is mail and logging code that isn't even used, so just ignore it.
     """
     app = Flask(__name__)
     app.config.from_object(config_class)
