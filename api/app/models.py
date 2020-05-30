@@ -9,6 +9,12 @@ from hashlib import md5
 import os
 import base64
 
+"""Defines each of the tables in the database: User, Lesson, Tlahtolli(word) as a python class using SQLAlchemy
+   When you make a change to one of these classes, don't forget to run:
+       flask db migrate -m "migrate message that explains what you did"
+       flask db upgrade
+"""
+
 class PaginatedAPIMixin(object):
     @staticmethod
     def to_collection_dict(query, page, per_page, endpoint, **kwargs):
