@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Link, Redirect } from 'react-router-dom'
-import { Card, Logo, Form, Input, Button, Error } from "../components/AuthForms"
+import { Redirect } from 'react-router-dom'
+import { Card, Form, Input, Button, Error } from "../components/AuthForms"
 import { useAuth } from '../context/auth'
 import { useUser } from '../context/user'
 
@@ -75,8 +75,8 @@ function Landing(props) {
 
     return (
         <div>
-        <h2 style={{textAlign: 'center'}}>Totlahtol</h2>
         <Card>
+        <h1 style={{textAlign: 'center', color: 'white'}}>Totlahtol</h1>
             <Form>
                 <Input
                 type="username"

@@ -8,6 +8,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: #5fa348;
 `;
 
 const Form = styled.div`
@@ -24,8 +25,8 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  background: linear-gradient(to bottom, #6371c7, #5563c1);
-  border-color: #3f4eae;
+  background: linear-gradient(to bottom, #ba421e, #b84827);
+  border-color: #a62e11;
   border-radius: 3px;
   padding: 1rem;
   color: white;

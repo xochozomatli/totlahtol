@@ -12,7 +12,7 @@ Otherwise, to connect to an existing PostgreSQL or MySQL server, create an empty
 
 #### Postgres
 
-    DATABASE_URL="postgresql+psycopg3://yourdatabaseusername:yourdatabasepassword@localhost:5432/totlahtol"
+    DATABASE_URL="postgresql+psycopg2://yourdatabaseusername:yourdatabasepassword@localhost:5432/totlahtol"
 
 
 #### MySQL
