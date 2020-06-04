@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 import hashlib
 
@@ -29,10 +30,10 @@ TASKS:
          to be stored in a lesson db, in a format that can be easily queried as an np array
 """
 
-def process_lesson(doc_text):
+def handle_lesson(text):
     """
     input
-    doc_text: a str of the lesson content to be processed
+    text: a str of the lesson content to be processed
     
     output
     lesson_id: a unique hashstring of the processed txt
@@ -40,7 +41,7 @@ def process_lesson(doc_text):
     """
     
     #cleans the document
-    bow_corpus = process_document(text)
+    bow_corpus = process_text(text)
     
     #gets unique id for processed tags
     lesson_id = get_id(bow_corpus)
@@ -52,7 +53,7 @@ def process_lesson(doc_text):
     lesson_id = get_id(text)
     
     #checks if id already in database
-    #PASS: to be implemented
+    #to be implemented
     
     return lesson_id, weights_array
 
@@ -60,45 +61,48 @@ def process_lesson(doc_text):
 def get_id(bow_corpus):
     #a unique hash of the processed text
     m = hashlib.sha256()
-    m.update(text)
+    m.update(bytes(str(bow_corpus), encoding='utf-8'))
+    
+    return m.digest()
 
 
-def process_document(doc_str):
+def process_text(text):
     """
     inputs
-    doc_str: the preprocess string of text of the lesson
+    text: the preprocess string of text of the lesson
     
     outputs
     bow_corpus: the vectorized count of text words
     
     """
-    #multilingual stopword set, common words in each language that don't contribute to the topic of the document
-    multi_lang_stop_words = set(stopwords.words(['russian', 'spanish', 'french', 'german', 'italian']))
-    stop_words = gensim.parsing.preprocessing.STOPWORDS.union(multi_lang_stop_words)
-    
-    #initialize stem
-    stemmer = SnowballStemmer('english')
     #call text process helper fn
-    processed_docs = documents.map(preprocess)
+    processed_doc = preprocess(text)
     
     #create dictionary for gensim
-    id2word = gensim.corpora.Dictionary(processed_docs)
+    id2word = gensim.corpora.Dictionary([processed_doc])
 
     #Term Document Frequency
-    bow_corpus = [id2word.doc2bow(text) for text in processed_docs]
+    bow_corpus = id2word.doc2bow(processed_doc)
     
     return bow_corpus
 
 
 #lesson process helper functions
 def lemmatize_stemming(text):
+    
+    stemmer = SnowballStemmer('english')
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
 
 def preprocess(text):
+    
+    #multilingual stopword set, common words in each language that don't contribute to the topic of the document
+    multi_lang_stop_words = set(stopwords.words(['russian', 'spanish', 'french', 'german', 'italian']))
+    stop_words = gensim.parsing.preprocessing.STOPWORDS.union(multi_lang_stop_words)
+    
     result = []
     for token in gensim.utils.simple_preprocess(text):
-        if token not in gensim.parsing.preprocessing.STOPWORDS.union(multi_lang_sw) and len(token) > 3:
+        if token not in gensim.parsing.preprocessing.STOPWORDS.union(multi_lang_stop_words) and len(token) > 3:
             result.append(lemmatize_stemming(token))
     return result
 
@@ -112,7 +116,7 @@ def get_topic_weights(bow_corpus):
     weights_array: 1D np array of len 15, with each idx corresponds to a topic
     """
     
-    lda_model = pickle.load(open('./lda_model.pkl', 'rb'))
+    lda_model = pickle.load(open('lda_model.pkl', 'rb'))
 
     # call gensim lda model method, returns predicted topic weights
     weights = lda_model.get_document_topics(bow_corpus)
@@ -131,9 +135,12 @@ def format_topic_weights(weights):
     topic_array: an np array where the predicted topic weights are presented for all 15 topics (most will be sparse)
     """
     topic_array = np.zeros(15)
+    
     for i in range(15):
         for idx, weight in weights:
             if idx == i:
                 topic_array[idx] = weight
-                
+
+            
     return topic_array
+    
