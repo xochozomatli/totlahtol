@@ -142,5 +142,5 @@ def format_topic_weights(weights):
                 topic_array[idx] = weight
 
             
-    return topic_array
+    return list(np.round(topic_array, 4))
     
