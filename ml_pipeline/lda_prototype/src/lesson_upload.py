@@ -63,7 +63,7 @@ def get_id(bow_corpus):
     m = hashlib.sha256()
     m.update(bytes(str(bow_corpus), encoding='utf-8'))
     
-    return m.digest()
+    return m.hexdigest()
 
 
 def process_text(text):
