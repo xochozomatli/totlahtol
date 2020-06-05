@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import { AuthContext } from './context/auth'
 import { UserContext } from './context/user'
@@ -7,7 +7,7 @@ import Landing from './pages/Landing'
 import Feed from './pages/Feed'
 
 function App() {
-  const [authTokens, setAuthTokens] = useState()
+  const [authTokens, setAuthTokens] = useState(localStorage.getItem('totlahtoltoken'))
   const [userData, setUserData] = useState()
 
   const setTokens = data => {

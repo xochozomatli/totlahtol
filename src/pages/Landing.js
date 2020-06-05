@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import { Card, Form, Input, Button, Error } from "../components/AuthForms"
-import { useAuth } from '../context/auth'
+import { useAuth, AuthContext } from '../context/auth'
 import { useUser } from '../context/user'
 
 function Landing(props) {
@@ -13,7 +13,7 @@ function Landing(props) {
     const [signupPassword, setSignupPassword] = useState("");
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    const { setAuthTokens } = useAuth();
+    const { authTokens, setAuthTokens } = useAuth();
     const { setUserData } = useUser();
     //const referer = props.location.state.referer || '/';
 
@@ -97,8 +97,6 @@ function Landing(props) {
                 <Button onClick={postLogin}>Sign In</Button>
             </Form>
                 { isError &&<Error>The username or password provided were incorrect!</Error> }
-        </Card>
-        <Card>
             <Form>
                 <Input
                 type="email"
