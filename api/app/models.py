@@ -8,6 +8,9 @@ from hashlib import md5
 # import jwt
 import os
 import base64
+import threading
+#from feli's model import handle_lesson
+import json
 
 """Defines each of the tables in the database: User, Lesson, Tlahtolli(word) as a python class using SQLAlchemy
    When you make a change to one of these classes, don't forget to run:
@@ -51,6 +54,8 @@ class User(PaginatedAPIMixin, db.Model):
     authored = db.relationship('Lesson', backref='author', lazy='dynamic')
     # viewed = db.relationship('Lesson', backref='author_id', lazy='dynamic')
     registered = db.Column(db.DateTime, default=datetime.utcnow)
+    tags = db.Column(db.Unicode(120))
+    liked = db.relationship('Lesson', backref='liked_by', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -111,14 +116,32 @@ class User(PaginatedAPIMixin, db.Model):
         if new_user and 'password' in data:
             self.set_password(data['password'])
 
+    def get_tags(self):
+        pass
+
 class Lesson(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), index=True, unique=True)
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    tags = db.Column(db.Unicode(120))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
+
+    def set_tags(self):
+        ''' This is the set_tags method. It sets tags.
+            It takes in a dict or list of tuples
+            or other dict-convertible iterable of tag:weight pairs
+            and saves it to the Lesson's 'tags' field as a json string.
+        '''
+        def calculate_and_save_tags(lesson):
+            lesson.tags = json.dumps(dict(handle_lesson(lesson.content)))
+            return None
+        daemon = threading.Thread(target=calculate_and_save_tags, args=(self,))
+        daemon.setDaemon(True)
+        daemon.start()
+        return None
 
     def to_dict(self, include_content=False):
         data = {

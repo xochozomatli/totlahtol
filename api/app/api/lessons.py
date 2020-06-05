@@ -38,7 +38,7 @@ def create_lesson():
 #    if data['prev'] and not previous.next:
 #            setattr(previous, next, data['id'])
     db.session.commit()
-    print('$$$$$ LESSON COMMITTED $$$$$')
+    #handle_lesson()
     response = jsonify(lesson.to_dict())
     response.status_code = 201
     print(lesson.id)
