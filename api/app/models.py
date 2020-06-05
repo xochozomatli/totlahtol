@@ -9,7 +9,7 @@ from hashlib import md5
 import os
 import base64
 import threading
-#from feli's model import handle_lesson
+from app.lesson_handler import handle_lesson
 import json
 
 """Defines each of the tables in the database: User, Lesson, Tlahtolli(word) as a python class using SQLAlchemy
@@ -54,7 +54,7 @@ class User(PaginatedAPIMixin, db.Model):
     authored = db.relationship('Lesson', backref='author', lazy='dynamic')
     # viewed = db.relationship('Lesson', backref='author_id', lazy='dynamic')
     registered = db.Column(db.DateTime, default=datetime.utcnow)
-    tags = db.Column(db.Unicode(120))
+    tags = db.Column(db.Unicode(240))
     liked = db.relationship('Lesson', backref='liked_by', lazy='dynamic')
 
     def __repr__(self):
@@ -125,7 +125,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    tags = db.Column(db.Unicode(120))
+    tags = db.Column(db.Unicode(240))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
 
