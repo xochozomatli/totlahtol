@@ -16,7 +16,7 @@ You will also see any lint errors in the console.
 
 Runs the flask backend in the development mode.<br />
 
-Edits don't automatically trigger a reload.<br />The app has to be restarted manually.<br />
+Reloads if you make edits.<br />
 Request log and errors in the console.
 
 ### `yarn test`
