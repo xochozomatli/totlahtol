@@ -21,6 +21,10 @@ import json
 """
 
 class PaginatedAPIMixin(object):
+    """Ok, so this is a mixin. A mixin is basically just a class that encapsulates a certain kind of common functionality
+       (in this case collecting objects to be sent to the frontend eg Lessons for the lesson feed) to be inherited by other classes,
+       that's why it just defines the one method and then all the other classes subclass it.
+    """
     @staticmethod
     def to_collection_dict(query, page, per_page, endpoint, **kwargs):
         resources = query.paginate(page, per_page, False)
@@ -54,8 +58,8 @@ class User(PaginatedAPIMixin, db.Model):
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     ###Add a user lesson db
-    tlahtolli = db.relationship('Tlahtolli', backref='user', lazy='dynamic')
-    authored = db.relationship('Lesson', backref='author', lazy='dynamic')
+    tlahtolli = db.relationship('Tlahtolli', backref='user_id', lazy='dynamic')
+    authored = db.relationship('Lesson', backref='author_id', lazy='dynamic')
     registered = db.Column(db.DateTime, default=datetime.utcnow)
     ###Add a user app interaction/activity db
     #TODO a sparsematrix of the lesson id and the thumb up or down
@@ -136,14 +140,14 @@ class User(PaginatedAPIMixin, db.Model):
         return review_matrix_format(self.reviews)
             
     def get_rec(self):
-    """
-     pulls together rec_like and rec_tag
-    """
+        """
+        pulls together rec_like and rec_tag
+        """
 
     #to address cold start problem: checks if user activity is above 5 or so lessons
     # if yes returns recs based on user2user_similarity
     # else returns recs based on item2item_similarity
-    pass
+        pass
 
 class Lesson(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -151,7 +155,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    tags = db.Column(db.String(120))
+    tags = db.Column(db.LargeBinary(120))
     hash_id = db.Column(db.String(120))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
@@ -164,7 +168,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
         '''
         def calculate_and_save_tags(lesson):
             #TODO change to output numpy array stored as bytes
-            lesson.tags = json.dumps(dict(handle_lesson(lesson.content)))
+            lesson.tag = handle_lesson(lesson.content)
             return None
         daemon = threading.Thread(target=calculate_and_save_tags, args=(self,))
         daemon.setDaemon(True)

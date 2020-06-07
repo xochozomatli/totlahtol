@@ -43,7 +43,7 @@ def handle_lesson(text):
     #checks if id already in database
     #to be implemented
     
-    return weights_array
+    return weights_array.tobytes()
 
 def get_id(bow_corpus):
     #a unique hash of the processed text
@@ -115,7 +115,7 @@ def format_topic_weights(weights):
     output
     topic_array: an np array where the predicted topic weights are presented for all 15 topics (most will be sparse)
     """
-    topic_array = np.zeros(15)
+    topic_array = np.zeros(15, dtype='float64')
     
     for i in range(15):
         for idx, weight in weights:
@@ -123,5 +123,5 @@ def format_topic_weights(weights):
                 topic_array[idx] = weight
 
             
-    return list(np.round(topic_array, 4))
+    return np.round(topic_array, 4)
     
