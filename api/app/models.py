@@ -66,7 +66,7 @@ class User(PaginatedAPIMixin, db.Model):
     #positive and negative ratings (1, 0, or -1)
     reviews = db.relationship('Lesson', backref='liked_by', lazy='dynamic') #add thumbs_down
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    viewed = db.relationship('Lesson', backref='author_id', lazy='dynamic')
+    # viewed = db.relationship('Lesson', backref='', lazy='dynamic') This may be necessary come time in the future, but not today
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -154,6 +154,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
     title = db.Column(db.String(120), index=True, unique=True)
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    liked_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     tags = db.Column(db.LargeBinary(120))
     hash_id = db.Column(db.String(120))
@@ -167,7 +168,6 @@ class Lesson(PaginatedAPIMixin, db.Model):
             and saves it to the Lesson's 'tags' field as a json string.
         '''
         def calculate_and_save_tags(lesson):
-            #TODO change to output numpy array stored as bytes
             lesson.tag = handle_lesson(lesson.content)
             return None
         daemon = threading.Thread(target=calculate_and_save_tags, args=(self,))
