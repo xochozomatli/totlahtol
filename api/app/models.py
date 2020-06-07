@@ -58,13 +58,13 @@ class User(PaginatedAPIMixin, db.Model):
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     ###Add a user lesson db
-    tlahtolli = db.relationship('Tlahtolli', foreign_keys='Tlahtolli.user_id', lazy='dynamic')
-    authored = db.relationship('Lesson', foreign_keys='Lesson.author_id', lazy='dynamic')
+    tlahtolli = db.relationship('Tlahtolli', backref='user', lazy='dynamic')
+    authored = db.relationship('Lesson', backref='author', lazy='dynamic')
     registered = db.Column(db.DateTime, default=datetime.utcnow)
     ###Add a user app interaction/activity db
     #TODO a sparsematrix of the lesson id and the thumb up or down
     #positive and negative ratings (1, 0, or -1)
-    reviews = db.relationship('Lesson', foreign_keys='Lesson.liked_by', lazy='dynamic') #add thumbs_down
+    reviews = db.relationship('Reviews', backref='reviewer', lazy='dynamic') #add thumbs_down
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     # viewed = db.relationship('Lesson', backref='', lazy='dynamic') This may be necessary come time in the future, but not today
 
@@ -154,9 +154,9 @@ class Lesson(PaginatedAPIMixin, db.Model):
     title = db.Column(db.String(120), index=True, unique=True)
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    liked_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     tags = db.Column(db.LargeBinary(120), default=b'\x00'*120)
+    ratings = db.relationship('Reviews', backref='lesson', lazy='dynamic')
     hash_id = db.Column(db.String(120))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
@@ -232,4 +232,18 @@ class Tlahtolli(PaginatedAPIMixin, db.Model):
 
     def __repr__(self):
         return '<{} {}>'.format(self.word, User.query.filter_by(id=self.user_id).first().username)
+
+class Reviews(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    reviewer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'))
+    rating = db.Column(db.Integer, db.CheckConstraint("state in [1,0,-1]"), default=0)
+
+    def to_dict(self):
+        data = {
+            'id':self.id,
+            'user_id':self.reviewer_id,
+            'lesson_id':self.lesson_id,
+            'rating':self.rating
+        }
 
