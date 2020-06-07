@@ -16,6 +16,8 @@ import json
    When you make a change to one of these classes, don't forget to run:
        flask db migrate -m "migrate message that explains what you did"
        flask db upgrade
+
+    TODO add lesson id hash process, could be stored in its own db with the lesson id
 """
 
 class PaginatedAPIMixin(object):
@@ -42,20 +44,25 @@ class PaginatedAPIMixin(object):
         return data
 
 class User(PaginatedAPIMixin, db.Model):
+    #key to join all the various dbs
     id = db.Column(db.Integer, primary_key=True)
+    #Basic User Info
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    ###Add a user lesson db
     tlahtolli = db.relationship('Tlahtolli', backref='user', lazy='dynamic')
     authored = db.relationship('Lesson', backref='author', lazy='dynamic')
-    # viewed = db.relationship('Lesson', backref='author_id', lazy='dynamic')
     registered = db.Column(db.DateTime, default=datetime.utcnow)
-    tags = db.Column(db.Unicode(240))
-    liked = db.relationship('Lesson', backref='liked_by', lazy='dynamic')
+    ###Add a user app interaction/activity db
+    #TODO a sparsematrix of the lesson id and the thumb up or down
+    #positive and negative ratings (1, 0, or -1)
+    reviews = db.relationship('Lesson', backref='liked_by', lazy='dynamic') #add thumbs_down
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    viewed = db.relationship('Lesson', backref='author_id', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -116,8 +123,27 @@ class User(PaginatedAPIMixin, db.Model):
         if new_user and 'password' in data:
             self.set_password(data['password'])
 
-    def get_tags(self):
-        pass
+    #@staticmethod
+    def get_reviews(self):
+        """returns an array, user by lesson_id,
+           shows the rating (1, 0, or -1) of each lesson in the db
+
+           to be implemented: each time a lesson is added, 
+           this activity database needs to be updated, once or twice a day
+        """
+        #TODO implement:
+        #convert self.reviews from sparse matrix to full matrix for all lessons to consider
+        return review_matrix_format(self.reviews)
+            
+    def get_rec(self):
+    """
+     pulls together rec_like and rec_tag
+    """
+
+    #to address cold start problem: checks if user activity is above 5 or so lessons
+    # if yes returns recs based on user2user_similarity
+    # else returns recs based on item2item_similarity
+    pass
 
 class Lesson(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -125,7 +151,8 @@ class Lesson(PaginatedAPIMixin, db.Model):
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    tags = db.Column(db.Unicode(240))
+    tags = db.Column(db.String(120))
+    hash_id = db.Column(db.String(120))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
 
@@ -136,6 +163,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
             and saves it to the Lesson's 'tags' field as a json string.
         '''
         def calculate_and_save_tags(lesson):
+            #TODO change to output numpy array stored as bytes
             lesson.tags = json.dumps(dict(handle_lesson(lesson.content)))
             return None
         daemon = threading.Thread(target=calculate_and_save_tags, args=(self,))
@@ -166,6 +194,15 @@ class Lesson(PaginatedAPIMixin, db.Model):
     
     def __repr__(self):
         return '<Lesson {}>'.format(self.title)
+
+    @staticmethod
+    def make_tag_matrix(self):
+        """Looks at all tag lists and concats into a matrix
+        
+        outputs
+        tag_matrix: numpy array, contains all the thumbsup/down behavior of users
+        """
+        pass
 
 class Tlahtolli(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)

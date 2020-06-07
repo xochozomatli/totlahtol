@@ -32,7 +32,7 @@ def handle_lesson(text):
     bow_corpus = process_text(text)
     
     #gets unique id for processed tags
-    # lesson_id = get_id(bow_corpus)
+    #lesson_id = get_id(bow_corpus)
     
     #gets the predicted weights for the topic
     weights_array = get_topic_weights(bow_corpus)

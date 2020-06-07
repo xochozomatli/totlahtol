@@ -6,9 +6,6 @@ Fake Data Helper Functions
 def gen_user_activity(num_users=200, num_lessons=30, thumbs_down=True):
 
     """
-    TODO
-    add thumbs down rating option
-    
     generates fake data on user activity, 1 meaning they completed a lesson, 0 saying they did not
     
     inputs
@@ -28,7 +25,7 @@ def gen_user_activity(num_users=200, num_lessons=30, thumbs_down=True):
         a[:m] = 0
         
         if thumbs_down:
-            num = np.random.randint(15,30)
+            num = np.random.randint(20,30)
             td = n - num
             a[m:td] = -1 
 
