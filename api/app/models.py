@@ -64,7 +64,7 @@ class User(PaginatedAPIMixin, db.Model):
     ###Add a user app interaction/activity db
     #TODO a sparsematrix of the lesson id and the thumb up or down
     #positive and negative ratings (1, 0, or -1)
-    reviews = db.relationship('Reviews', backref='reviewer', lazy='dynamic') #add thumbs_down
+    reviews = db.relationship('Review', backref='reviewer', lazy='dynamic') #add thumbs_down
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     # viewed = db.relationship('Lesson', backref='', lazy='dynamic') This may be necessary come time in the future, but not today
 
@@ -156,7 +156,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     tags = db.Column(db.LargeBinary(120), default=b'\x00'*120)
-    ratings = db.relationship('Reviews', backref='lesson', lazy='dynamic')
+    ratings = db.relationship('Review', backref='lesson', lazy='dynamic')
     hash_id = db.Column(db.String(120))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
@@ -233,17 +233,29 @@ class Tlahtolli(PaginatedAPIMixin, db.Model):
     def __repr__(self):
         return '<{} {}>'.format(self.word, User.query.filter_by(id=self.user_id).first().username)
 
-class Reviews(db.Model):
+class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reviewer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'))
-    rating = db.Column(db.Integer, db.CheckConstraint("state in [1,0,-1]"), default=0)
+    rating = db.Column(db.Integer, db.CheckConstraint("state in [1,-1]"))
 
     def to_dict(self):
         data = {
             'id':self.id,
-            'user_id':self.reviewer_id,
+            'reviewer_id':self.reviewer_id,
             'lesson_id':self.lesson_id,
             'rating':self.rating
         }
+
+    def from_dict(self, data):
+        for field in ['reviewer_id', 'lesson_id', 'rating']:
+            if field in data:
+                setattr(self, field, data[field])
+
+    def __repr__(self):
+        options = {1:'likes', -1:'dislikes'}
+        return '<{} {} {}>'.format(
+            User.query.filter_by(id=self.reviewer_id).first().username,
+            options[self.rating],
+            Lesson.query.filter_by(id=self.lesson_id).first().title)
 
