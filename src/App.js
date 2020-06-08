@@ -7,17 +7,30 @@ import Landing from './pages/Landing'
 import Feed from './pages/Feed'
 
 function App() {
-  const [authTokens, setAuthTokens] = useState(localStorage.getItem('totlahtoltoken'))
-  const [userData, setUserData] = useState()
+  const [authToken, setAuthToken] = useState(localStorage.getItem('totlahtoltoken'))
+  const [userData, setUserData] = useState(localStorage.getItem('totlahtoluser'))
 
-  const setTokens = data => {
-    localStorage.setItem("totlahtoltoken", JSON.stringify(data));
-    setAuthTokens(data)
+  const setToken = data => {
+    if (data !== null){
+      localStorage.setItem("totlahtoltoken", data)
+    } else {
+      localStorage.removeItem("totlahtoltoken")
+    }
+    setAuthToken(data)
+  }
+
+  const setUser = data => {
+    if (data !== null){
+      localStorage.setItem("totlahtoluser", JSON.stringify(data))
+    } else {
+      localStorage.removeItem("totlahtoluser")
+    }
+    setUserData(data)
   }
 
   return (
-    <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <UserContext.Provider value={{ userData, setUserData: setUserData }}>
+    <AuthContext.Provider value={{ authToken, setAuthToken: setToken }}>
+      <UserContext.Provider value={{ userData, setUserData: setUser }}>
       <Router>
         <div>
           <PrivateRoute exact path='/' component={Feed} />

@@ -13,7 +13,7 @@ function Landing(props) {
     const [signupPassword, setSignupPassword] = useState("");
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    const { authTokens, setAuthTokens } = useAuth();
+    const { authToken, setAuthToken } = useAuth();
     const { setUserData } = useUser();
     //const referer = props.location.state.referer || '/';
 
@@ -26,7 +26,7 @@ function Landing(props) {
         }).then(result => {
             if (result.status === 200) {
                 console.log(result.data.token)
-                setAuthTokens(result.data);
+                setAuthToken(result.data.token);
                 return result.data
             } else {
                 setIsError(true)
@@ -56,7 +56,7 @@ function Landing(props) {
         password: signupPassword
         }).then(result => {
         if (result.status === 201) {
-            setAuthTokens({ 'token': result.data.token })
+            setAuthToken({ 'token': result.data.token })
             delete result.data.token
             setUserData(result.data)
             setLoggedIn(true)

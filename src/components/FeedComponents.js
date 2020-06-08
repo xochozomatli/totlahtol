@@ -4,6 +4,33 @@ const Header = styled.header`
   height: 42px;
   background-color: #5fa348;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+`
+const HeaderContentStart = styled.div`
+  display: flex;
+  flex-axis: column;
+  align-items: center;
+  font-weight: 800;
+  font-size: 1.3rem;
+`
+
+const HeaderContentEnd = styled.div`
+  display: flex;
+  flex-axis: column;
+  align-items: center;
+  font-weight: 600;
+`
+
+const HeaderTitle = styled.span`
+  margin-right: 1rem; 
+  margin-left: 1rem;
+`
+
+const HeaderButton = styled.a`
+  margin-right: 1rem; 
+  margin-left: 1rem;
 `
 
 const CardTitle = styled.div`
@@ -79,4 +106,4 @@ const Error = styled.div`
   background-color: red;
 `;
 
-export { Header, Form, Input, TextBox, Button, Logo, Card, CardTitle, Error };
+export { Header, HeaderContentStart, HeaderContentEnd, HeaderTitle, HeaderButton, Form, Input, TextBox, Button, Logo, Card, CardTitle, Error };
