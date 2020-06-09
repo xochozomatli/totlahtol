@@ -155,9 +155,9 @@ class Lesson(PaginatedAPIMixin, db.Model):
     content = db.Column(db.String(15000))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    tags = db.Column(db.LargeBinary(120), default=b'\x00'*120)
+    #tags = db.Column(db.LargeBinary(120), default=b'\x00'*120)
     ratings = db.relationship('Review', backref='lesson', lazy='dynamic')
-    hash_id = db.Column(db.String(120))
+    #hash_id = db.Column(db.String(120))
     prev = db.Column(db.Integer)
     next = db.Column(db.Integer)
 
