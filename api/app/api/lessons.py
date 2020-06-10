@@ -14,7 +14,7 @@ def get_lesson(id):
 #@token_auth.login_required
 def get_lessons():
     page = request.args.get('page', 1, type=int)
-    per_page = min(request.args.get('per_page', 10, type=int), 100)
+    per_page = min(request.args.get('per_page', 5, type=int), 100)
     data = Lesson.to_collection_dict(Lesson.query, page, per_page, 'api.get_lessons')
     return jsonify(data)
 

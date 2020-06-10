@@ -180,6 +180,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
             'id':self.id,
             'title':self.title,
             'timestamp':self.timestamp,
+            'author': User.query.filter_by(id=self.author_id).first().username,
             '_links':{
                 'self':url_for('api.get_lesson', id=self.id),
                 #'prev':url_for('api.get_lesson', id=self.prev),

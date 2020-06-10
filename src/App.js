@@ -8,7 +8,7 @@ import Feed from './pages/Feed'
 
 function App() {
   const [authToken, setAuthToken] = useState(localStorage.getItem('totlahtoltoken'))
-  const [userData, setUserData] = useState(localStorage.getItem('totlahtoluser'))
+  const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('totlahtoluser')))
 
   const setToken = data => {
     if (data !== null){

@@ -7,13 +7,21 @@ import { useUser, UserContext } from '../context/user'
 
 
 function Feed() {
-    const [title, setTitle] = useState("")
+    const [isError, setIsError] = useState(false);
+    const [lessonTitle, setLessonTitle] = useState("")
     const [lessonText, setLessonText] = useState("")
+    const [lessonsOnPage, setLessonsOnPage] = useState([])
+    const perPage = 2
+    const [lessonsLinks, setLessonsLinks] = useState(
+        {
+            "next": "/api/lessons?page=1&per_page="+perPage,
+            "prev": null,
+            "self": null
+        })
     const { authToken, setAuthToken } = useAuth()
     const { userData, setUserData } = useUser()
 
-    console.log(authToken)
-    console.log(useUser())
+    console.log(lessonTitle)
 
     function deleteUser(){
         const bearer = "Bearer ".concat(authToken)
@@ -21,6 +29,43 @@ function Feed() {
 
         axios.delete('http://localhost:5000/api/users/'+userData.id, { headers: { Authorization: bearer } })
     }
+
+    function createLesson(){
+        const bearer = "Bearer ".concat(authToken)
+
+        axios.post("http://localhost:5000/api/lessons", {
+            title: lessonTitle,
+            content: lessonText,
+            author_id: userData.id
+        },
+        {
+            headers: { Authorization: bearer }
+        }).then( e => {
+            setLessonTitle("")
+            setLessonText("")
+        })
+    }
+
+    function getLessonsPage(){
+        axios.get('http://localhost:5000'+lessonsLinks.next
+        ).then(result => {
+            if (result.status===200){
+                return result.data
+            } else {
+                setIsError(true)
+                Promise.reject()
+            }
+        }).then( data => {
+            console.log(data)
+            setLessonsLinks(data._links)
+            let newLessons = data.items
+            console.log(newLessons)
+            setLessonsOnPage([...lessonsOnPage, ...newLessons])
+        }).catch( e => {
+            setIsError(true)
+        })
+    }
+
 
     return (
         <div>
@@ -41,9 +86,9 @@ function Feed() {
                 <Form>
                     <Input
                     type="title"
-                    value={title}
+                    value={lessonTitle}
                     onChange={e => {
-                        setTitle(e.target.value)
+                        setLessonTitle(e.target.value)
                     }}
                     placeholder="What do you want to call your lesson?"
                     />
@@ -55,8 +100,16 @@ function Feed() {
                     }}
                     placeholder="Enter your lesson's text here"
                     />
-                    <Button onClick={e => {console.log('lesson shared!')}}>Share</Button>
+                    <Button onClick={createLesson}>Share</Button>
                 </Form>
+            </Card>
+            <div id="lessons">{ lessonsOnPage.map( lesson =>
+                <Card>
+                    <span>{lesson.title} by {lesson.author}</span>
+                </Card>) }
+            </div>
+            <Card>
+                <Button onClick={getLessonsPage}>Load Lessons</Button>
             </Card>
         </div>
     )
