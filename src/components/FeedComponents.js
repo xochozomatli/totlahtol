@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Header = styled.header`
+const HeaderBar = styled.header`
   height: 42px;
   background-color: #5fa348;
   margin-bottom: 1rem;
@@ -31,6 +31,7 @@ const HeaderTitle = styled.span`
 const HeaderButton = styled.a`
   margin-right: 1rem; 
   margin-left: 1rem;
+  cursor: pointer;
 `
 
 const CardTitle = styled.div`
@@ -58,6 +59,10 @@ const Card = styled.div`
   background: #fff;
   border: 1px solid #dddfe2;
   border-radius: 0px 0px 5px 5px;
+`;
+
+const LessonCard = styled(Card)`
+  cursor: pointer;
 `;
 
 const Form = styled.div`
@@ -95,6 +100,7 @@ const Button = styled.button`
   width: 100%;
   margin-bottom: 0rem;
   font-size: 0.8rem;
+  cursor: pointer;
 `;
 
 const Logo = styled.img`
@@ -106,4 +112,4 @@ const Error = styled.div`
   background-color: red;
 `;
 
-export { Header, HeaderContentStart, HeaderContentEnd, HeaderTitle, HeaderButton, Form, Input, TextBox, Button, Logo, Card, CardTitle, Error };
+export { HeaderBar, HeaderContentStart, HeaderContentEnd, HeaderTitle, HeaderButton, Form, Input, TextBox, Button, Logo, Card, LessonCard, CardTitle, Error };
