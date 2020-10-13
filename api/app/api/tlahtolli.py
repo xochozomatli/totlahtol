@@ -8,7 +8,7 @@ from app.api.errors import error_response, bad_request
 @bp.route('/tlahtolli/<word>', methods=['GET'])
 @token_auth.login_required
 def get_tlahtolli(word):
-    return jsonify(Tlahtolli.query.filter_by(user_id=g.current_user.id, word=word).first_or_404())
+    return jsonify(Tlahtolli.query.filter_by(user_id=g.current_user.id, word=word).first_or_404().to_dict())
 
 @bp.route('/tlahtolli', methods=['GET'])
 @token_auth.login_required

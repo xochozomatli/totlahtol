@@ -196,6 +196,13 @@ class Lesson(PaginatedAPIMixin, db.Model):
         for field in ['title','author_id', 'content', 'prev', 'next']:
             if field in data:
                 setattr(self, field, data[field])
+
+    def get_user_tlahtolli(self, user):
+        word_set = set(''.join([char for char in self.content.lower() if char.isalnum() or char is ' ']).split())
+        user_tlahtolli = [tlahtolli.to_dict() for tlahtolli in Tlahtolli.query.filter(Tlahtolli.user_id==user.id, Tlahtolli.word.in_(word_set)).all()]
+        return user_tlahtolli
+        
+
     
     def __repr__(self):
         return '<Lesson {}>'.format(self.title)

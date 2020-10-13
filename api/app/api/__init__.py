@@ -8,4 +8,4 @@ from flask import Blueprint
 
 bp = Blueprint('api', __name__)
 
-from app.api import users, lessons, errors, tokens, reviews
+from app.api import users, lessons, tlahtolli, errors, tokens, reviews

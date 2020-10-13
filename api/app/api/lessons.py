@@ -8,7 +8,11 @@ from app.api.errors import error_response, bad_request
 @bp.route('/lessons/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_lesson(id):
-    return jsonify(Lesson.query.get_or_404(id).to_dict())
+    lesson = Lesson.query.get_or_404(id)
+    user_tlahtolli = lesson.get_user_tlahtolli(g.current_user)
+    lesson_dict = lesson.to_dict(include_content=True)
+    lesson_dict['user_tlahtolli'] = user_tlahtolli
+    return jsonify(lesson_dict)
 
 @bp.route('/lessons', methods=['GET'])
 #@token_auth.login_required
