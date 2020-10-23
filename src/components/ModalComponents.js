@@ -53,32 +53,26 @@ const ModalExit = styled.div`
 `
 
 const TlahtolliHint = styled.form`
-  visibility: hidden;
-  width: 180px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -60px;
-
   position: absolute;
-  z-index: 1;
-  
+  top: 1.8rem;
 `
 
-const Tlahtolli = styled.div`
+const TlahtolliWord = styled.span`
+`
+
+const TlahtolliBody = styled.div`
   position: relative;
   display: inline-block;
-  margin: .8rem .2rem;
-  padding: .1rem;
-  border-bottom: solid ${ props => props.seen==true ? "#ba421e" : "#5fa348"};
+  margin: .2rem .2rem;
+  padding: .2rem .1rem 1rem .1rem;
   cursor: pointer;
-  ${'' /* &:hover ${TlahtolliHint} {
-    visibility: visible; */}
+  & > ${TlahtolliHint} {
+    display: ${ props => props.showHint==true ? "block" : "none"};
+    & > input{border: solid ${ props => props.seen==true ? "#ba421e" : "#5fa348"}};
+  };
+  & > ${TlahtolliWord} {
+    border-bottom: solid ${ props => props.seen==true ? "#ba421e" : "#5fa348"};
   }
 `
 
-export {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, Tlahtolli, TlahtolliHint}
+export {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliHint}

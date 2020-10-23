@@ -22,11 +22,17 @@ def get_mochi_tlahtolli():
 @token_auth.login_required
 def create_tlahtolli():
     data = request.get_json() or {}
+    print(data)
     if 'word' not in data or 'state' not in data:
+        print("word or state not in data")
         return bad_request('must include word and state')
-    if Tlahtolli.query.filter_by(word=data['word']):
+
+    if Tlahtolli.query.filter_by(word=data['word']).first():
+        print("tlahtolli \"{}\" exists!".format(data['word']))
         return bad_request("there's already a Tlahtolli for that word")
+    
     tlahtolli = Tlahtolli()
+    print("Blank tlahtolli created~~~")
     tlahtolli.from_dict(data)
     db.session.add(tlahtolli)
     db.session.commit()
@@ -38,7 +44,9 @@ def create_tlahtolli():
 @bp.route('/tlahtolli/<word>', methods=['PUT'])
 @token_auth.login_required
 def update_tlahtolli(word):
-    tlahtolli = Tlahtolli.query.filter_by(word=word).first_or_404()
+    print("made it into update function; word={}".format(word))
+    tlahtolli = Tlahtolli.query.filter_by(word=word.title()).first_or_404()
+    print("made it past 'first or 404'")
     if g.current_user.id != tlahtolli.user_id:
         return error_response(403)
     data = request.get_json() or {}

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import { HeaderBar, HeaderContentStart, HeaderContentEnd, HeaderTitle, HeaderButton, Form, Input, TextBox, Button, Logo, Card, LessonCard, CardTitle, Error } from "../components/FeedComponents"
-import {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, Tlahtolli, TlahtolliHint} from "../components/ModalComponents"
+import {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliHint} from "../components/ModalComponents"
 import { useAuth, AuthContext } from '../context/auth'
 import { useUser, UserContext } from '../context/user'
 import { useLesson, LessonContext } from '../context/lesson'
@@ -88,23 +88,16 @@ function Modal(props){
     const { lessonData, setLessonData } = useLesson()
     const [currentTlahtolli, setCurrentTlahtolli] = useState()
     const toggleShow = props.toggleShow
-    console.log(typeof(toggleShow))
-    function handleTlahtolliClick(e){
+    console.log("Attempting modal rerender...")
+    function activateTlahtolli(e){
         const word = e.target.innerText.toLowerCase().replace(/[^0-9a-z]/,'')
         const tlahtolli = lessonData.user_tlahtolli.find(obj => obj.word==word)
         setCurrentTlahtolli(tlahtolli)
         console.log(tlahtolli)
     }
-    var userTlahtolli = [];
-    if (lessonData != null){
-        userTlahtolli = lessonData.user_tlahtolli.map((entry) => entry.word);
-    console.log(userTlahtolli);
-    console.log(userTlahtolli.includes('xochiteuctli'));
-    }
-
-    console.log(lessonData)
-    console.log(props.show)
+    useEffect(()=>console.log("Modal Mounted----"))
     if (props.show){
+        console.log("Rerender successful!")
         return(
             <>
                 <ModalBackground>
@@ -124,12 +117,14 @@ function Modal(props){
                         <ModalTitle>{lessonData.title}</ModalTitle>
                         <ModalContent>
                             {lessonData.content.split(/[\s\n]+/).map((word,index) =>
-                            <Tlahtolli key={index} onClick={handleTlahtolliClick} seen={userTlahtolli.includes(word.toLowerCase()) ? true : false}>
-                                {word}
-                                <TlahtolliHint>
-                                <input />
-                                </TlahtolliHint>
-                            </Tlahtolli>)}
+                            <Tlahtolli word={word.toLowerCase()}
+                                       definition={lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()) ? lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()).definition : undefined}
+                                       seen={lessonData.user_tlahtolli.map(entry=>entry.word).includes(word.toLowerCase()) ? true : false}
+                                       active={currentTlahtolli===index}
+                                       activate={setCurrentTlahtolli}
+                                       key={index}
+                                       index={index} />
+                            )}
                         </ModalContent>
                     </ModalBody>
                 </ModalBackground> 
@@ -138,6 +133,53 @@ function Modal(props){
     } else {
         return ""
     }
+}
+
+function Tlahtolli(props) {
+    const { lessonData } = useLesson()
+    const { userData } = useUser()
+    const { authToken } = useAuth()
+    const [hintText, setHintText] = useState(props.definition)
+
+     function submitNewDefinition(){
+        const bearer = "Bearer ".concat(authToken)
+        if (props.definition) {
+            axios.put("http://localhost:5000/api/tlahtolli/"+props.word, {
+                word: props.word,
+                user_id: userData.id,
+                definition: hintText,
+                state: "tlahtolli"
+            },
+            {
+                headers: { Authorization: bearer }
+            }).then( e => { })
+        } else {
+            axios.post("http://localhost:5000/api/tlahtolli", {
+                word: props.word,
+                user_id: userData.id,
+                definition: hintText,
+                state: "tlahtolli"
+            },
+            {
+                headers: { Authorization: bearer }
+            }).then( e => { })
+        }
+    }   
+
+    useEffect(()=>{
+        // setHintText(props.definition)
+    })
+    return(
+        <TlahtolliBody onMouseEnter={() => {props.activate(props.index)}}
+                    onMouseLeave={() => {props.activate()}}
+                    showHint={props.active}
+                    seen={props.seen}>
+            <TlahtolliWord>{props.word}</TlahtolliWord>
+            <TlahtolliHint onSubmit={e=>{e.preventDefault(); submitNewDefinition(hintText)}}>
+              <input value={hintText || ""} onChange={e=>setHintText(e.target.value)}/>
+            </TlahtolliHint>
+        </TlahtolliBody>
+    )
 }
 
 // TODO: Change the name of Feed() to Home();
@@ -173,7 +215,6 @@ function Feed() {
             setLessonData(data)
             console.log(data)
             toggleShowModal(true)
-            console.log(showModal)
         }).catch( e => {
             setIsError(true)
         })
