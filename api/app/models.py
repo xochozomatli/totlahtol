@@ -83,7 +83,7 @@ class User(PaginatedAPIMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https:gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
 
-    def get_token(self, expires_in=15, refresh_token_expires_in=604800):
+    def get_token(self, expires_in=3600, refresh_token_expires_in=604800):
         now = datetime.utcnow()
         if self.token and self.token_expiration > now + timedelta(seconds=60):
             return json.dumps({ 'token': self.token, 'token_expiration': self.token_expiration, 'refresh_token': self.refresh_token })
