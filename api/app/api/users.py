@@ -1,14 +1,15 @@
-from flask import jsonify, request, url_for, g, abort
+from flask import jsonify, request, url_for, g, abort, make_response
 from app import db
 from app.models import User
 from app.api import bp
 from app.api.auth import token_auth
 from app.api.errors import error_response, bad_request
+from datetime import datetime, timedelta
 
-@bp.route('/users/current/<string:token>', methods=['GET'])
+@bp.route('/users/current', methods=['GET'])
 @token_auth.login_required
-def get_current_user(token):
-    return jsonify(User.query.filter_by(token=token).first().to_dict())
+def get_current_user():
+    return jsonify(g.current_user.to_dict())
 
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
@@ -51,6 +52,13 @@ def update_user(id):
         return error_response(403)
     user = User.query.get_or_404(id)
     data = request.get_json() or {}
+    if 'action' in data and data['action'] == 'deauth':
+        user.revoke_token()
+        response=make_response('',200)
+        response.set_cookie(#If you don't set this cookie, something weird happens and we tokens keep refreshing;
+            key='refresh_token', value='', #TODO: fix the above
+            expires=datetime.utcnow()-timedelta(hours=24), httponly=True)
+        return response
     if 'username' in data and data['username'] != user.username and \
             User.query.filter_by(username=data['username']).first():
         return bad_request('please use a different username')

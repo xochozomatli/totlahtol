@@ -6,6 +6,8 @@ import { useAuth, AuthContext } from '../context/auth'
 import { useUser } from '../context/user'
 
 function Landing(props) {
+    const { authToken, setAuthToken } = useAuth();
+    const { setUserData } = useUser();
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
     const [email, setEmail] = useState("")
@@ -13,20 +15,17 @@ function Landing(props) {
     const [signupPassword, setSignupPassword] = useState("");
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    const { authToken, setAuthToken } = useAuth();
-    const { setUserData } = useUser();
     //const referer = props.location.state.referer || '/';
-
     function postLogin() {
         axios.post("http://localhost:5000/api/tokens", {}, {
             auth: {
                 username: loginUsername,
                 password: loginPassword
-            }
+            }, withCredentials: true
         }).then(result => {
             if (result.status === 200) {
-                console.log(result.data.token)
-                setAuthToken(result.data.token);
+                console.log(result.data)
+                setAuthToken(result.data);
                 return result.data
             } else {
                 setIsError(true)
@@ -34,7 +33,7 @@ function Landing(props) {
             }
         }).then(data => { 
             const bearer = "Bearer ".concat(data.token)
-            return axios.get("http://localhost:5000/api/users/current/"+data.token, { headers: { Authorization: bearer } })
+            return axios.get("http://localhost:5000/api/users/current", { headers: { Authorization: bearer } })
         }).then(result => {
             if (result.status === 200) {
                 setUserData(result.data)
@@ -69,7 +68,7 @@ function Landing(props) {
         });
     }
 
-    if (isLoggedIn) {
+    if (isLoggedIn) { //This currently doesn't even do anything because isLoggedIn is reinitialized to false
         return <Redirect to='/' />; // Hardcoded redirect to home, was "to={referer}"
     }
 
@@ -81,17 +80,15 @@ function Landing(props) {
                 <Input
                 type="username"
                 value={loginUsername}
-                onChange={e => {
-                    setLoginUsername(e.target.value);
-                }}
+                onChange={e => { setLoginUsername(e.target.value) }}
+                onKeyDown={e => { if(e.key=='Enter'){postLogin()} }}
                 placeholder="username"
                 />
                 <Input
                 type="password"
                 value={loginPassword}
-                onChange={e => {
-                    setLoginPassword(e.target.value);
-                }}
+                onChange={e => { setLoginPassword(e.target.value) }}
+                onKeyDown={e => { if(e.key=='Enter'){postLogin()} }}
                 placeholder="password"
                 />
                 <Button onClick={postLogin}>Sign In</Button>
@@ -101,25 +98,22 @@ function Landing(props) {
                 <Input
                 type="email"
                 value={email}
-                onChange={e => {
-                    setEmail(e.target.value);
-                }}
+                onChange={e => { setEmail(e.target.value) }}
+                onKeyDown={e => { if(e.key=='Enter'){postSignup()} }}
                 placeholder="email"
                 />
                 <Input
                 type="username"
                 value={signupUsername}
-                onChange={e => {
-                    setSignupUsername(e.target.value);
-                }}
+                onChange={e => { setSignupUsername(e.target.value) }}
+                onKeyDown={e => { if(e.key=='Enter'){postSignup()} }}
                 placeholder="username"
                 />
                 <Input
                 type="password"
                 value={signupPassword}
-                onChange={e => {
-                    setSignupPassword(e.target.value);
-                }}
+                onChange={e => { setSignupPassword(e.target.value) }}
+                onKeyDown={e => { if(e.key=='Enter'){postSignup()} }}
                 placeholder="password"
                 />
                 <Button onClick={postSignup}>Sign Up</Button>

@@ -45,7 +45,7 @@ def create_tlahtolli():
 @token_auth.login_required
 def update_tlahtolli(word):
     print("made it into update function; word={}".format(word))
-    tlahtolli = Tlahtolli.query.filter_by(word=word.title()).first_or_404()
+    tlahtolli = Tlahtolli.query.filter_by(word=word).first_or_404()
     print("made it past 'first or 404'")
     if g.current_user.id != tlahtolli.user_id:
         return error_response(403)

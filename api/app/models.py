@@ -57,6 +57,8 @@ class User(PaginatedAPIMixin, db.Model):
     about_me = db.Column(db.String(140))
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    refresh_token = db.Column(db.String(32), index=True, unique=True)
+    refresh_token_expiration = db.Column(db.DateTime)
     ###Add a user lesson db
     tlahtolli = db.relationship('Tlahtolli', backref='user', lazy='dynamic')
     authored = db.relationship('Lesson', backref='author', lazy='dynamic')
@@ -81,24 +83,45 @@ class User(PaginatedAPIMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https:gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
 
-    def get_token(self, expires_in=3600):
+    def get_token(self, expires_in=15, refresh_token_expires_in=604800):
         now = datetime.utcnow()
         if self.token and self.token_expiration > now + timedelta(seconds=60):
-            return self.token
+            return json.dumps({ 'token': self.token, 'token_expiration': self.token_expiration, 'refresh_token': self.refresh_token })
         self.token = base64.urlsafe_b64encode(os.urandom(24)).decode('utf-8')
         self.token_expiration = now + timedelta(seconds=expires_in)
+        self.refresh_token = base64.urlsafe_b64encode(os.urandom(24)).decode('utf-8')
+        self.refresh_token_expiration = now + timedelta(seconds=refresh_token_expires_in)
         db.session.add(self)#Just in case you're getting a token from a User who's not yet in the database
-        return self.token
+        token_dict = { 'token': self.token, 'token_expiration': self.token_expiration, 'refresh_token': self.refresh_token, 'refresh_token_expiration': self.refresh_token_expiration }
+        print(token_dict)
+        return token_dict
 
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
+        self.refresh_token_expiration = datetime.utcnow() - timedelta(seconds=1)
+        print('tokens supposedly revoked')
+        print(self.refresh_token_expiration, datetime.utcnow(),sep=' vs ')
 
     @staticmethod
     def check_token(token):
         user = User.query.filter_by(token=token).first()
         if user is None or user.token_expiration < datetime.utcnow():
             return None
+        print(user.token_expiration, datetime.utcnow(),sep=' vs ')
+        print(user)
         return user
+
+    @staticmethod
+    def refresh(refresh_token):
+        user = User.query.filter_by(refresh_token=refresh_token).first()
+        if user is None:
+            return None
+        elif user.refresh_token_expiration < datetime.utcnow():
+            print("Refresh Token Expired; We're very sorry:(")
+            return None
+        print("Refresh Token Valid; Right this way, sir!")
+        return user.get_token()
+
 
     def to_dict(self, include_email=False):
         data = {

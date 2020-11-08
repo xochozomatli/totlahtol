@@ -26,7 +26,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
-    cors.init_app(app, resources={r"/api/*": {"origins":"*"}})
+    cors.init_app(app, supports_credentials=True, resources={r"/api/*": {"origins":"http://localhost:3000"}})
 
     # app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
 
