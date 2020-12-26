@@ -86,7 +86,7 @@ class User(PaginatedAPIMixin, db.Model):
     def get_token(self, expires_in=3600, refresh_token_expires_in=604800):
         now = datetime.utcnow()
         if self.token and self.token_expiration > now + timedelta(seconds=60):
-            return json.dumps({ 'token': self.token, 'token_expiration': self.token_expiration, 'refresh_token': self.refresh_token })
+            return { 'token': self.token, 'token_expiration': self.token_expiration, 'refresh_token': self.refresh_token, 'refresh_token_expiration': self.refresh_token_expiration }
         self.token = base64.urlsafe_b64encode(os.urandom(24)).decode('utf-8')
         self.token_expiration = now + timedelta(seconds=expires_in)
         self.refresh_token = base64.urlsafe_b64encode(os.urandom(24)).decode('utf-8')
