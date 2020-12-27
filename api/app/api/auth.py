@@ -20,6 +20,7 @@ def basic_auth_error():
 
 @token_auth.verify_token
 def verify_token(token):
+    print(token)
     g.current_user = User.check_token(token) if token else None
     return g.current_user is not None
 

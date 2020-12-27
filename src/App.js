@@ -26,7 +26,11 @@ function App() {
 
   useEffect(()=>{
     setLoadingState(true)
-    axios.get('http://localhost:5000/api/refresh', {withCredentials: true}).then(res=>{setAuthToken(res.data);setLoadingState(false)}).catch(err=>{console.log("valio verga");setLoadingState(false)})
+    axios.get('http://localhost:5000/api/refresh', {withCredentials: true})
+      .then(res=>{setAuthToken(res.data);setLoadingState(false)})
+      .catch(err=>{console.log("valio verga");
+    setLoadingState(false)
+  })
   },[])
 
   if (loadingState===null){

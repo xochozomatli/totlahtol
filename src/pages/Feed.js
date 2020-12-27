@@ -13,7 +13,7 @@ function Header(){
     const { userData, setUserData } = useUser()
 
     function deauthUser(){
-        const bearer = "Bearer ".concat(authToken)
+        const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'put',
             url: "http://localhost:5000/api/users/"+userData.id,
@@ -28,7 +28,7 @@ function Header(){
     }
 
     function deleteUser(){
-        const bearer = "Bearer ".concat(authToken)
+        const bearer = "Bearer ".concat(authToken.token)
         axios.delete('http://localhost:5000/api/users/'+userData.id, { headers: { Authorization: bearer } })
         const requestConfig = {
             method: 'delete',
@@ -67,7 +67,7 @@ function LessonForm(){
     const { userData } = useUser(null)
 
     function createLesson(){
-        const bearer = "Bearer ".concat(authToken)
+        const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'post',
             url: "http://localhost:5000/api/lessons",
@@ -82,7 +82,7 @@ function LessonForm(){
         const err = res => {console.log(res)}
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)
-        // const bearer = "Bearer ".concat(authToken)
+        // const bearer = "Bearer ".concat(authToken.token)
         // axios.post("http://localhost:5000/api/lessons", {
         //     title: lessonTitle,
         //     content: lessonText,
@@ -137,7 +137,7 @@ function Modal(props){
     useEffect(() => {
         let didCancel=false;
         setIsLoading(true)
-        const bearer = "Bearer ".concat(authToken)
+        const bearer = "Bearer ".concat(authToken.token)
         axios.get('http://localhost:5000/api/lessons/'+props.lesson,
                 { headers: { Authorization: bearer },
                 validateStatus: (status) => (status >= 200 && status<300) || status===401}
@@ -233,7 +233,7 @@ function Tlahtolli(props) {
     const [hintText, setHintText] = useState(props.definition || "")
 
      function submitNewDefinition(){
-        const bearer = "Bearer ".concat(authToken)
+        const bearer = "Bearer ".concat(authToken.token)
         if (props.definition) {
             axios.put("http://localhost:5000/api/tlahtolli/"+props.word, {
                 word: props.word,

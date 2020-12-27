@@ -32,7 +32,7 @@ def create_tlahtolli():
         return bad_request("there's already a Tlahtolli for that word")
     
     tlahtolli = Tlahtolli()
-    print("Blank tlahtolli created~~~")
+    print("New tlahtolli created~~~")
     tlahtolli.from_dict(data)
     db.session.add(tlahtolli)
     db.session.commit()
