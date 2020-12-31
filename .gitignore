@@ -66,4 +66,4 @@ venv
 app.db
 logs
 .env
-
+.flaskenv
