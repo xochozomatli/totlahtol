@@ -29,3 +29,9 @@ See the docs for more information:
 [pytest-cov](https://pytest-flask.readthedocs.io)
 
 [testing flask apps](https://flask.palletsprojects.com/en/1.1.x/testing/)
+
+### References
+
+[Example `conftest.py` file](https://github.com/pallets/flask/blob/1.1.2/examples/tutorial/tests/conftest.py)
+
+
