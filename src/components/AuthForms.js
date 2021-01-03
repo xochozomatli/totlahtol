@@ -47,4 +47,7 @@ const Error = styled.div`
   background-color: red;
 `;
 
-export { Form, Input, Button, Logo, Card, Error };
+const Success = styled.div`
+  background-color: green;
+`;
+export { Form, Input, Button, Logo, Card, Error, Success };

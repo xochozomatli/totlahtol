@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import { Card, Form, Input, Button, Error } from "../components/AuthForms"
+import { Card, Form, Input, Button, Success, Error } from "../components/AuthForms"
 import { useAuth, AuthContext } from '../context/auth'
 import { useUser } from '../context/user'
 
@@ -10,6 +10,7 @@ function Landing(props) {
     const { setUserData } = useUser();
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const [email, setEmail] = useState("")
     const [signupUsername, setSignupUsername] = useState("");
     const [signupPassword, setSignupPassword] = useState("");
@@ -55,10 +56,7 @@ function Landing(props) {
         password: signupPassword
         }).then(result => {
         if (result.status === 201) {
-            setAuthToken({ 'token': result.data.token })
-            delete result.data.token
-            setUserData(result.data)
-            setLoggedIn(true)
+            setIsSuccess(true)
         } else {
             console.log('This is the first error catch')
             setIsError(true)
@@ -118,6 +116,7 @@ function Landing(props) {
                 />
                 <Button onClick={postSignup}>Sign Up</Button>
             </Form>
+                { isSuccess &&<Success>Thanks for signing up! Check your email to verify your account.</Success> }
                 { isError &&<Error></Error> }
         </Card>
     </div>
