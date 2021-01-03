@@ -4,6 +4,7 @@ from app.models import User
 from app.api import bp
 from app.api.auth import token_auth
 from app.api.errors import error_response, bad_request
+from app.email import send_verification_email
 from datetime import datetime, timedelta
 
 @bp.route('/users/current', methods=['GET'])
@@ -37,9 +38,10 @@ def create_user():
     user.from_dict(data, new_user=True)
     db.session.add(user)
     db.session.commit()
-    token = user.get_token()
+    send_verification_email(user)
+    # token = user.get_token()
     user_dict = user.to_dict()
-    user_dict['token'] = token
+    # user_dict['token'] = token
     response = jsonify(user_dict)
     response.status_code = 201
     response.headers['Location'] = url_for('api.get_user', id=user.id)

@@ -1,4 +1,4 @@
-from flask import jsonify, g, make_response, request
+from flask import jsonify, g, make_response, request, redirect
 from app import db
 from app.models import User
 from app.api import bp
@@ -17,6 +17,16 @@ def get_token():
     # response.headers.add('Set-Cookie','refresh_token='+tokens_dict['refresh_token']+'; Expires='+timezone('GMT').localize(tokens_dict['refresh_token_expiration']).strftime('%a, %d-%b-%Y %H:%M:%S %Z')+'; SameSite=Lax; Path=/')
     db.session.commit()
     return response
+    
+@bp.route('/verify-email/<token>', methods=['GET'])
+def verify_user_email(token):
+    user = User.verify_email(token)
+    g.current_user = user
+    if not user:
+        return error_response(404)
+    user.verified = True
+    db.session.commit()
+    return redirect(app.config['FRONTEND_URL'], code=303)
 
 @bp.route('/refresh', methods=['GET'])
 def refresh_token():

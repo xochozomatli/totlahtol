@@ -1,11 +1,11 @@
-from flask import url_for
+from flask import url_for, current_app
 from datetime import datetime, timedelta
 from time import time
 from app import db
 # from app.search import add_to_index, remove_from_index, query_index
 from werkzeug.security import generate_password_hash, check_password_hash
 from hashlib import md5
-# import jwt
+import jwt
 import os
 import base64
 import threading
@@ -53,6 +53,7 @@ class User(PaginatedAPIMixin, db.Model):
     #Basic User Info
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    verified = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(140))
     token = db.Column(db.String(32), index=True, unique=True)
@@ -122,11 +123,37 @@ class User(PaginatedAPIMixin, db.Model):
         print("Refresh Token Valid; Right this way, sir!")
         return user.get_token()
 
+    def get_email_verification_token(self, expires_in=600):
+        return jwt.encode({'verify_user_email': self.id, 'exp': time() + expires_in},
+        current_app.config['SECRET_KEY'], algorithm='HS256')
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
+        current_app.config['SECRET_KEY'], algorithm='HS256')
+
+    @staticmethod
+    def verify_email(token):
+        try:
+            id = jwt.decode(token, current_app.config['SECRET_KEY'],
+                algorithms=['HS256'])['verify_user_email']
+        except:
+            return
+        return User.query.get(id)
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, current_app.config['SECRET_KEY'],
+                algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
     def to_dict(self, include_email=False):
         data = {
             'id': self.id,
             'username': self.username,
+            'verified': str(self.verified).lower(),
             # 'last_seen': self.last_seen.isoformat() + 'Z',
             'about_me': self.about_me,
         #     'post_count': self.posts.count(),
@@ -171,6 +198,8 @@ class User(PaginatedAPIMixin, db.Model):
     # if yes returns recs based on user2user_similarity
     # else returns recs based on item2item_similarity
         pass
+
+
 
 class Lesson(PaginatedAPIMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
