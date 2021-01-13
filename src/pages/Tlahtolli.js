@@ -8,6 +8,7 @@ function Tlahtolli(props) {
     const { userData } = useUser()
     const { authToken, setAuthToken } = useAuth()
     const [hintText, setHintText] = useState(props.definition || "")
+    const [active, setActive] = useState(false)
 
     function submitNewDefinition(){
         const bearer = "Bearer ".concat(authToken.token)
@@ -32,9 +33,9 @@ function Tlahtolli(props) {
     }
 
     return(
-        <TlahtolliBody onMouseEnter={() => {props.activate(props.index)}}
-                    onMouseLeave={() => {props.activate()}}
-                    showHint={props.active}
+        <TlahtolliBody onMouseEnter={() => {setActive(true)}}
+                    onMouseLeave={() => {setActive(false)}}
+                    showHint={active}
                     seen={props.seen}>
             <TlahtolliWord>{props.word}</TlahtolliWord>
             <TlahtolliHint onSubmit={e=>{e.preventDefault(); submitNewDefinition(hintText)}}>

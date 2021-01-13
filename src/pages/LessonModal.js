@@ -30,7 +30,6 @@ function Modal(props){
 function LessonModal(props){
     const { authToken, setAuthToken } = useAuth()
     const [ lessonData, setLessonData ] = useState()
-    const [currentTlahtolli, setCurrentTlahtolli] = useState()
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
     const [reloadLessonData, setReloadLessonData] = useState(false)
@@ -85,8 +84,6 @@ function LessonModal(props){
             <Tlahtolli word={word} //TODO maybe expand these using object spread? Needs organization
                         definition={lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()) ? lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()).definition : undefined}
                         seen={lessonData.user_tlahtolli.map(entry=>entry.word).includes(word.toLowerCase()) ? true : false}
-                        active={currentTlahtolli===index}
-                        activate={setCurrentTlahtolli}
                         setReloadLessonData={setReloadLessonData}
                         key={index}
                         index={index} />
