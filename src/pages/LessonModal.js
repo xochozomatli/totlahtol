@@ -81,8 +81,8 @@ function LessonModal(props){
     }
     return(
         <Modal title={lessonData.title}>
-            {lessonData.content.split(/[\s\n]+/).map((word,index) =>
-            <Tlahtolli word={word.toLowerCase()} //TODO maybe expand these using object spread? Needs organization
+            {lessonData.content.match(/\w+|[^\w\s]+/g).map((word,index) =>
+            <Tlahtolli word={word} //TODO maybe expand these using object spread? Needs organization
                         definition={lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()) ? lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()).definition : undefined}
                         seen={lessonData.user_tlahtolli.map(entry=>entry.word).includes(word.toLowerCase()) ? true : false}
                         active={currentTlahtolli===index}

@@ -58,6 +58,9 @@ const TlahtolliHint = styled.form`
 `
 
 const TlahtolliWord = styled.span`
+  cursor: pointer;
+`
+const TlahtolliPunct = styled.span`
 `
 
 const TlahtolliBody = styled.div`
@@ -65,7 +68,6 @@ const TlahtolliBody = styled.div`
   display: inline-block;
   margin: .2rem .2rem;
   padding: .2rem .1rem 1rem .1rem;
-  cursor: pointer;
   & > ${TlahtolliHint} {
     display: ${ props => props.showHint===true ? "block" : "none"};
     & > input{border: solid ${ props => props.seen===true ? "#ba421e" : "#5fa348"}};
@@ -73,6 +75,9 @@ const TlahtolliBody = styled.div`
   & > ${TlahtolliWord} {
     border-bottom: solid ${ props => props.seen===true ? "#ba421e" : "#5fa348"};
   }
+  & > ${TlahtolliPunct} {
+    border-bottom: none;
+  }
 `
 
-export {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliHint}
+export {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint}

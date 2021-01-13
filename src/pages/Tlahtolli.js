@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { secureRequest } from '../requestWrapper'
 import { useAuth } from '../context/auth'
 import { useUser } from '../context/user'
-import { TlahtolliBody, TlahtolliWord, TlahtolliHint } from "../style/ModalComponents"
+import { TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint } from "../style/ModalComponents"
 
 function Tlahtolli(props) {
     const { userData } = useUser()
@@ -13,9 +13,9 @@ function Tlahtolli(props) {
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: props.definition ? 'put' : 'post',
-            url: "http://localhost:5000/api/tlahtolli"+(props.definition ? '/'+props.word : ''),
+            url: "http://localhost:5000/api/tlahtolli"+(props.definition ? '/'+props.word.toLowerCase() : ''),
             data: {
-                word: props.word,
+                word: props.word.toLowerCase(),
                 user_id: userData.id,
                 definition: hintText,
                 state: "tlahtolli"
@@ -27,6 +27,9 @@ function Tlahtolli(props) {
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)
     }   
+    if (props.word.match(/[^\w]+/)){
+        return <TlahtolliBody><TlahtolliPunct>{props.word}</TlahtolliPunct></TlahtolliBody>
+    }
 
     return(
         <TlahtolliBody onMouseEnter={() => {props.activate(props.index)}}
