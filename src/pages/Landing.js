@@ -8,7 +8,6 @@ import { useUser } from '../context/user'
 function Landing() {
     const { setAuthToken } = useAuth();
     const { userData, setUserData } = useUser();
-    const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [email, setEmail] = useState("")
@@ -37,7 +36,6 @@ function Landing() {
         }).then(result => {
             if (result.status === 200) {
                 setUserData(result.data)
-                setLoggedIn(true);
             } else {
                 setIsError(true)
             }
