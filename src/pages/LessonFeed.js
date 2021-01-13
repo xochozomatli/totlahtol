@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { Button, Card, LessonCard } from "../style/FeedComponents"
@@ -8,7 +8,7 @@ function LessonFeed(props){
     console.log(props.match)
     const [isError, setIsError] = useState(false)
     const [lessonsOnPage, setLessonsOnPage] = useState([])
-    const perPage = 2
+    const perPage = 5 //--default on backend is 5, but explicit is better than implicit--
     const [lessonsLinks, setLessonsLinks] = useState(
         {
             "next": "/api/lessons?page=1&per_page="+perPage,
@@ -16,7 +16,7 @@ function LessonFeed(props){
             "self": null
         })
 
-    function getLessonsPage(){//TODO call this from within useEffect()
+    function getLessonsPage(){
         axios.get('http://localhost:5000'+lessonsLinks.next
         ).then(result => {
             if (result.status===200){
@@ -33,7 +33,11 @@ function LessonFeed(props){
             setIsError(true)
             
         })
-    }           
+    }
+    
+    useEffect(()=>{
+        getLessonsPage()
+    }, [])
 
     return(
     <>
