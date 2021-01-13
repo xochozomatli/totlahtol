@@ -15,7 +15,7 @@ export async function secureRequest(conf, successHandler, errorHandler, tokenSet
                 const newToken = refreshRes.data
                 console.log(newToken)
                 tokenSetter(newToken)
-                conf.headers.Authorization="Bearer "+newToken.token //history will absolve me
+                conf.headers.Authorization="Bearer "+newToken.token
                 secureRequest(conf, successHandler, errorHandler, tokenSetter, false)
                 return null
             }
@@ -25,6 +25,6 @@ export async function secureRequest(conf, successHandler, errorHandler, tokenSet
         console.log("Success Handler Called!")
     } catch(err){
         errorHandler(err)
-        console.log(attemptRefresh)
+        console.log("Error Handler Called! Attempt Refresh: "+attemptRefresh)
     }
 }

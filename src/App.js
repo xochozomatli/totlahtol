@@ -4,14 +4,12 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import { AuthContext } from './context/auth'
 import { UserContext } from './context/user'
-import { LessonContext } from './context/lesson'
 import Landing from './pages/Landing'
-import Feed from './pages/Feed'
+import Home from './pages/Home'
 
 function App() {
   const [authToken, setAuthToken] = useState(null)
   const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('totlahtoluser')))
-  const [lessonData, setLesson] = useState(null)
   const [loadingState, setLoadingState] = useState(null)
 
   const setUser = data => {
@@ -41,18 +39,15 @@ function App() {
     return "Loading..."
   }
 
-
   return (
     <AuthContext.Provider value={{ authToken, setAuthToken}}>
       <UserContext.Provider value={{ userData, setUserData: setUser }}>
-        <LessonContext.Provider value={{ lessonData, setLessonData: setLesson }}>
           <Router>
             <Switch>
-              <PrivateRoute exact path='/' component={Feed} />
               <Route path='/login' component={Landing} />
+              <PrivateRoute path='/' component={Home} />
             </Switch>
           </Router>
-        </LessonContext.Provider>
       </UserContext.Provider>
     </AuthContext.Provider>
   );

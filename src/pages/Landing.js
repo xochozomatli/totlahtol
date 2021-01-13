@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import { Card, Form, Input, Button, Success, Error } from "../components/AuthForms"
+import { Card, Form, Input, Button, Success, Error } from "../style/AuthForms"
 import { useAuth, AuthContext } from '../context/auth'
 import { useUser } from '../context/user'
 
