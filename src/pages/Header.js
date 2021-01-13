@@ -16,7 +16,7 @@ function Header(){
             data: { action: 'deauth' },
             headers: { Authorization: bearer }
         }
-        const succ = res => {setAuthToken('');setUserData('');console.log(authToken)}
+        const succ = res => {setAuthToken(null);setUserData(null);console.log(authToken)}
         const err = res => {console.log(res)}
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)

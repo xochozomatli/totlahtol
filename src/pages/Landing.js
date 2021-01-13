@@ -5,9 +5,9 @@ import { Card, Form, Input, Button, Success, Error } from "../style/AuthForms"
 import { useAuth } from '../context/auth'
 import { useUser } from '../context/user'
 
-function Landing(props) {
+function Landing() {
     const { setAuthToken } = useAuth();
-    const { setUserData } = useUser();
+    const { userData, setUserData } = useUser();
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -65,8 +65,8 @@ function Landing(props) {
         });
     }
 
-    if (isLoggedIn) { //This currently doesn't even do anything because isLoggedIn is reinitialized to false
-        return <Redirect to='/' />; // Hardcoded redirect to home, was "to={referer}"
+    if (userData) { 
+        return <Redirect to='/' /> 
     }
 
     return (
