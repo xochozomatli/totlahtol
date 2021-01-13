@@ -67,11 +67,11 @@ const TlahtolliBody = styled.div`
   padding: .2rem .1rem 1rem .1rem;
   cursor: pointer;
   & > ${TlahtolliHint} {
-    display: ${ props => props.showHint==true ? "block" : "none"};
-    & > input{border: solid ${ props => props.seen==true ? "#ba421e" : "#5fa348"}};
+    display: ${ props => props.showHint===true ? "block" : "none"};
+    & > input{border: solid ${ props => props.seen===true ? "#ba421e" : "#5fa348"}};
   };
   & > ${TlahtolliWord} {
-    border-bottom: solid ${ props => props.seen==true ? "#ba421e" : "#5fa348"};
+    border-bottom: solid ${ props => props.seen===true ? "#ba421e" : "#5fa348"};
   }
 `
 

@@ -56,6 +56,7 @@ function LessonModal(props){
         }
         const err = res => {
             let code = res.response!==undefined ? res.response.status : "no error code to see here, folks"
+            console.log(code)
             setIsError(true)
         }
         const setter = setAuthToken
@@ -65,6 +66,9 @@ function LessonModal(props){
     }, [reloadLessonData])
 
     if (!lessonData){
+        if (isError){
+            return <Modal title="Ooops :l">x_x looks like we had a problem fetching your lesson :(</Modal>
+        }
         return null
     }
     console.log("isLoading: "+isLoading)

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { Button, Card, LessonCard } from "../style/FeedComponents"
+import { Error } from "../style/AuthForms"
 
 function LessonFeed(props){
     console.log(props.match)
@@ -33,6 +34,7 @@ function LessonFeed(props){
             
         })
     }           
+
     return(
     <>
         <div id="lessons">{ lessonsOnPage.map( lesson =>
@@ -43,6 +45,7 @@ function LessonFeed(props){
         <Card>
         {/* TODO remove this button and call getLessonsPage from useEffect() */}
             <Button onClick={getLessonsPage}>Load Lessons</Button>
+            { isError &&<Error>Sorry! We weren't able to load your lessons UnU</Error> }
         </Card>
     </>
     )

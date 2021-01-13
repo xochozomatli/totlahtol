@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { secureRequest } from '../requestWrapper'
 import { useAuth} from '../context/auth'
 import { useUser } from '../context/user'
@@ -20,7 +20,6 @@ function Header(){
         const err = res => {console.log(res)}
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)
-
     }
 
     function deleteUser(){

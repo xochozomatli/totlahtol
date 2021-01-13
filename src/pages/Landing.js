@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import { Card, Form, Input, Button, Success, Error } from "../style/AuthForms"
-import { useAuth, AuthContext } from '../context/auth'
+import { useAuth } from '../context/auth'
 import { useUser } from '../context/user'
 
 function Landing(props) {
-    const { authToken, setAuthToken } = useAuth();
+    const { setAuthToken } = useAuth();
     const { setUserData } = useUser();
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -16,7 +16,6 @@ function Landing(props) {
     const [signupPassword, setSignupPassword] = useState("");
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    //const referer = props.location.state.referer || '/';
     function postLogin() {
         axios.post("http://localhost:5000/api/tokens", {}, {
             auth: {
@@ -79,14 +78,14 @@ function Landing(props) {
                 type="username"
                 value={loginUsername}
                 onChange={e => { setLoginUsername(e.target.value) }}
-                onKeyDown={e => { if(e.key=='Enter'){postLogin()} }}
+                onKeyDown={e => { if(e.key==='Enter'){postLogin()} }}
                 placeholder="username"
                 />
                 <Input
                 type="password"
                 value={loginPassword}
                 onChange={e => { setLoginPassword(e.target.value) }}
-                onKeyDown={e => { if(e.key=='Enter'){postLogin()} }}
+                onKeyDown={e => { if(e.key==='Enter'){postLogin()} }}
                 placeholder="password"
                 />
                 <Button onClick={postLogin}>Sign In</Button>
@@ -97,21 +96,21 @@ function Landing(props) {
                 type="email"
                 value={email}
                 onChange={e => { setEmail(e.target.value) }}
-                onKeyDown={e => { if(e.key=='Enter'){postSignup()} }}
+                onKeyDown={e => { if(e.key==='Enter'){postSignup()} }}
                 placeholder="email"
                 />
                 <Input
                 type="username"
                 value={signupUsername}
                 onChange={e => { setSignupUsername(e.target.value) }}
-                onKeyDown={e => { if(e.key=='Enter'){postSignup()} }}
+                onKeyDown={e => { if(e.key==='Enter'){postSignup()} }}
                 placeholder="username"
                 />
                 <Input
                 type="password"
                 value={signupPassword}
                 onChange={e => { setSignupPassword(e.target.value) }}
-                onKeyDown={e => { if(e.key=='Enter'){postSignup()} }}
+                onKeyDown={e => { if(e.key==='Enter'){postSignup()} }}
                 placeholder="password"
                 />
                 <Button onClick={postSignup}>Sign Up</Button>
