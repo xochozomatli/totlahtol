@@ -43,7 +43,7 @@ function LessonFeed(props){
     <>
         <div id="lessons">{ lessonsOnPage.map( lesson =>
             <LessonCard key={lesson.id} id={'lesson'+lesson.id}>
-                <Link to={`${props.match.url}lessons/${lesson.id}`}>{lesson.title} by {lesson.author}</Link>
+                <Link to={`${props.match.url}lessons/${lesson.id}`}>{lesson.title} by {lesson.author_name}</Link>
             </LessonCard>) }
         </div>
         <Card>

@@ -52,23 +52,28 @@ def create_lesson():
 @bp.route('/lessons/<int:id>', methods=['PUT'])
 @token_auth.login_required
 def update_lesson(id):
-    if 'author_id' not in data or g.current_user.id != data['author_id']:
-        return error_response(403)
     lesson = Lesson.query.get_or_404(id)
     data = request.get_json() or {}
+    print('PUT request data: {}'.format(data))
+    if g.current_user.id != lesson.author_id:
+        return error_response(403)
     if 'title' in data and data['title'] != lesson.title and \
             Lesson.query.filter_by(title=data['title']).first():
         return bad_request('please use a different title')
     lesson.from_dict(data)
+    user_tlahtolli = lesson.get_user_tlahtolli(g.current_user)
+    lesson_dict = lesson.to_dict(include_content=True)
+    lesson_dict['user_tlahtolli'] = user_tlahtolli
+    print(lesson.content)
     db.session.commit()
-    return jsonify(lesson.to_dict())
+    return jsonify(lesson_dict)
 
 @bp.route('/lessons/<int:id>', methods=['DELETE'])
 @token_auth.login_required
 def delete_lesson(id):
-    if 'author_id' not in data or g.current_user.id != data['author_id']:
-        return error_response(403)
     lesson = Lesson.query.get_or_404(id)
+    if g.current_user.id != lesson.author_id:
+        return error_response(403)
     db.session.delete(lesson)
     db.session.commit()
     return '', 204

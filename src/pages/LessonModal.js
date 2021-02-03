@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { Link, Redirect, useHistory, useRouteMatch } from 'react-router-dom'
 import { secureRequest } from '../requestWrapper'
-import { useHistory } from 'react-router-dom'
-import { ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit } from "../style/ModalComponents"
+import { ModalBackground, ModalBody, ModalHeader, ModalTitle, EditButton, DeleteButton, ModalContent, ModalExit } from "../style/ModalComponents"
+import { TextBox } from "../style/FeedComponents"
 import Tlahtolli from './Tlahtolli'
 import { useAuth } from '../context/auth'
+import { useUser } from '../context/user'
 
 function Modal(props){
+    console.log(props)
     const history = useHistory()
     const closeModal = e => {
         e.stopPropagation()
-        history.goBack()
+        history.push('/')
     }
 
     return(<ModalBackground>
@@ -20,7 +23,10 @@ function Modal(props){
                             <line x1="1" y1="1" x2="22" y2="22" stroke="black" strokeWidth="2"/>
                         </svg>
                     </ModalExit>
-                    <ModalTitle>{props.title}</ModalTitle>
+                    <ModalHeader>
+                        <ModalTitle>{props.title}</ModalTitle>
+                        { props.headerButton && props.headerButton() }
+                    </ModalHeader>
                     <ModalContent>{props.children}</ModalContent>
                 </ModalBody>
             </ModalBackground>
@@ -29,11 +35,16 @@ function Modal(props){
 
 function LessonModal(props){
     const { authToken, setAuthToken } = useAuth()
+    const { userData } = useUser()
     const [ lessonData, setLessonData ] = useState()
+    const [ lessonText, setLessonText] = useState()
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
     const [reloadLessonData, setReloadLessonData] = useState(false)
-    console.log(props.match.params)
+    const history = useHistory()
+    const match = useRouteMatch()
+    const [confirmedDelete, setConfirmedDelete] = useState(false)
+    console.log(match.params)
     console.log(lessonData)
     
     useEffect(() => {
@@ -49,6 +60,7 @@ function LessonModal(props){
         const succ = res => {
             if (!didCancel){
                 setLessonData(res.data)
+                setLessonText(res.data.content)
             }
             setIsLoading(false)
             setReloadLessonData(false)
@@ -78,8 +90,70 @@ function LessonModal(props){
             </Modal>
         )
     }
+
+    function updateLesson(){
+        console.log(props)
+        const bearer = "Bearer ".concat(authToken.token)
+        const requestConfig = {
+            method: 'put',
+            url: "http://localhost:5000/api/lessons/"+match.params.id,
+            data: {
+                content: lessonText
+            },
+            headers: { Authorization: bearer }
+        }
+        const succ = res => {
+            console.log("lessonData before: ", lessonData)
+            setLessonData(res.data)
+            setLessonText(res.data.content)
+            console.log("lessonData after: ", res.data)
+            history.goBack()
+        }
+        const err = res => {
+            let code = res.response!==undefined ? res.response.status : "no error code to see here, folks"
+            console.log(code)
+            setIsError(true)
+        }
+        const setter = setAuthToken
+        secureRequest(requestConfig, succ, err, setter)
+
+    }
+
+    function deleteLesson(){
+        setConfirmedDelete(confirmedDelete ? false : true)
+        if (!confirmedDelete){return null}
+        console.log("this shouldn't run")
+        const bearer = " Bearer ".concat(authToken.token)
+        const requestConfig = {
+            method: 'delete',
+            url: "http://localhost:5000/api/lessons/"+match.params.id,
+            headers: { Authorization: bearer }
+        }
+        const succ = res => {
+            console.log(res)
+            history.replace('/')
+        }
+        const err = res => {
+            console.log(res)
+        }
+        const setter = setAuthToken
+        secureRequest(requestConfig, succ, err, setter)
+    }
+
+    if (props.editing){
+        const DeleteButton = () => <button onClick={deleteLesson}>{confirmedDelete ? "Are you sure?" : "Delete"}</button>
+        return(
+            <Modal title={lessonData.title} editing={props.editing} headerButton={DeleteButton} >
+                <TextBox value={lessonText} onChange={e => { setLessonText(e.target.value) }}/>
+                <button onClick={updateLesson}>Save</button>
+                <button onClick={()=>{history.goBack()}}>Cancel</button>
+            </Modal>
+        )
+    }
+
+    const EditButton = () => <button><Link to={`${match.url}/edit`}>Edit</Link></button>
     return(
-        <Modal title={lessonData.title}>
+        <Modal title={lessonData.title} headerButton={userData.id===lessonData.author_id ? EditButton : false} >
             {lessonData.content.match(/\w+|[^\w\s]+/g).map((word,index) =>
             <Tlahtolli word={word} //TODO maybe expand these using object spread? Needs organization
                         definition={lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()) ? lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()).definition : undefined}

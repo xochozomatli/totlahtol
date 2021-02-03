@@ -228,11 +228,13 @@ class Lesson(PaginatedAPIMixin, db.Model):
         return None
 
     def to_dict(self, include_content=False):
+        author=User.query.filter_by(id=self.author_id).first()
         data = {
             'id':self.id,
             'title':self.title,
             'timestamp':self.timestamp,
-            'author': User.query.filter_by(id=self.author_id).first().username,
+            'author_name': author.username,
+            'author_id': author.id,
             '_links':{
                 'self':url_for('api.get_lesson', id=self.id),
                 #'prev':url_for('api.get_lesson', id=self.prev),

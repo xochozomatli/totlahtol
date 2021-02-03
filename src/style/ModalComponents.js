@@ -20,19 +20,30 @@ const ModalBody = styled.div`
   width: 36rem;
   border-radius: 0.5rem;
 `
-
-const ModalTitle = styled.div`
+const ModalHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
   margin: 0 auto;
   background: #f5f6f7;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #444;
   padding: .5rem 1rem;
   border: 1px solid #dddfe2;
   border-radius: 5px 5px 0px 0px;
   border-bottom: 0px;
+`
+
+const ModalTitle = styled.span`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #444;
+`
+
+const EditButton = styled.button`
+  
+`
+const DeleteButton = styled.button`
+  
 `
 
 const ModalContent = styled.div`
@@ -80,4 +91,4 @@ const TlahtolliBody = styled.div`
   }
 `
 
-export {ModalBackground, ModalBody, ModalTitle, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint}
+export {ModalBackground, ModalBody, ModalHeader, ModalTitle, EditButton, DeleteButton, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint}
