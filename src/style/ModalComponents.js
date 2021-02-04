@@ -62,6 +62,18 @@ const ModalExit = styled.div`
   width: 1.5rem;
   cursor: pointer;
 `
+const TextBox = styled.textarea`
+  padding: 1rem;
+  ${'' /* border: none; */}
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  height: 60vh;
+  width: 100%;
+  border-radius: 5px;
+  resize: none;
+  outline: none;
+`;
+
 
 const TlahtolliHint = styled.form`
   position: absolute;
@@ -91,4 +103,4 @@ const TlahtolliBody = styled.div`
   }
 `
 
-export {ModalBackground, ModalBody, ModalHeader, ModalTitle, EditButton, DeleteButton, ModalContent, ModalExit, TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint}
+export {ModalBackground, ModalBody, ModalHeader, ModalTitle, EditButton, DeleteButton, ModalContent, ModalExit, TextBox, TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint}

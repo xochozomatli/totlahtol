@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Redirect, useHistory, useRouteMatch } from 'react-router-dom'
 import { secureRequest } from '../requestWrapper'
-import { ModalBackground, ModalBody, ModalHeader, ModalTitle, EditButton, DeleteButton, ModalContent, ModalExit } from "../style/ModalComponents"
-import { TextBox } from "../style/FeedComponents"
+import { ModalBackground, ModalBody, ModalHeader, ModalTitle, TextBox, EditButton, DeleteButton, ModalContent, ModalExit } from "../style/ModalComponents"
 import Tlahtolli from './Tlahtolli'
 import { useAuth } from '../context/auth'
 import { useUser } from '../context/user'
