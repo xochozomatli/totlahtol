@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const HeaderBar = styled.header`
+const Bar = styled.header`
   height: 42px;
   background-color: #5fa348;
   margin-bottom: 1rem;
@@ -8,7 +8,7 @@ const HeaderBar = styled.header`
   justify-content: space-between;
   color: white;
 `
-const HeaderContentStart = styled.div`
+const ContentStart = styled.div`
   display: flex;
   flex-axis: column;
   align-items: center;
@@ -16,21 +16,47 @@ const HeaderContentStart = styled.div`
   font-size: 1.3rem;
 `
 
-const HeaderContentEnd = styled.div`
+const ContentEnd = styled.div`
   display: flex;
   flex-axis: column;
   align-items: center;
   font-weight: 600;
+  background-color: #ba421e;
+  cursor: pointer;
 `
 
-const HeaderTitle = styled.span`
+const Title = styled.span`
   margin-right: 1rem; 
   margin-left: 1rem;
 `
 
-const HeaderButton = styled.a`
+const MenuToggle = styled.div`
   margin-right: 1rem; 
   margin-left: 1rem;
+  background-color: #ba421e;
+  cursor: pointer;
+`
+
+const AccountPopover = styled.div`
+  position: absolute;
+  top: 42px;
+  right: 0px;
+  width: 10rem;
+  background-color: white;
+  border: 1px solid #dddfe2;
+  border-radius: 5px;
+`
+
+const PopoverItem = styled.div`
+  padding: .75rem .25rem;
+  border-bottom: 1px solid #dddfe2;
+  cursor: pointer;
+`
+
+const PopoverLink = styled.a`
+  margin-right: 1rem; 
+  margin-left: 1rem;
+  color: #444;
   cursor: pointer;
 `
 
@@ -61,7 +87,7 @@ const Card = styled.div`
   border-radius: 0px 0px 5px 5px;
 `;
 
-const LessonCard = styled(Card)`
+const LessonCard = styled(Card)`;
   cursor: pointer;
 `;
 
@@ -112,4 +138,4 @@ const Error = styled.div`
   background-color: red;
 `;
 
-export { HeaderBar, HeaderContentStart, HeaderContentEnd, HeaderTitle, HeaderButton, Form, Input, TextBox, Button, Logo, Card, LessonCard, CardTitle, Error };
+export { Bar, ContentStart, ContentEnd, Title, MenuToggle, PopoverLink, AccountPopover, PopoverItem, Form, Input, TextBox, Button, Logo, Card, LessonCard, CardTitle, Error };

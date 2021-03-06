@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { secureRequest } from '../requestWrapper'
-import { useAuth } from '../context/auth'
-import { useUser } from '../context/user'
-import { TlahtolliBody, TlahtolliWord, TlahtolliPunct, TlahtolliHint } from "../style/ModalComponents"
+import { secureRequest } from '../../requestWrapper'
+import { useAuth } from '../../context/auth'
+import { useUser } from '../../context/user'
+import { Body, Word, Punct, Hint } from "./TlahtolliStyles"
 
 function Tlahtolli(props) {
     const { userData } = useUser()
@@ -29,19 +29,19 @@ function Tlahtolli(props) {
         secureRequest(requestConfig, succ, err, setter)
     }   
     if (props.word.match(/[^\w]+/)){
-        return <TlahtolliBody><TlahtolliPunct>{props.word}</TlahtolliPunct></TlahtolliBody>
+        return <Body><Punct>{props.word}</Punct></Body>
     }
 
     return(
-        <TlahtolliBody onMouseEnter={() => {setActive(true)}}
+        <Body onMouseEnter={() => {setActive(true)}}
                     onMouseLeave={() => {setActive(false)}}
                     showHint={active}
                     seen={props.seen}>
-            <TlahtolliWord>{props.word}</TlahtolliWord>
-            <TlahtolliHint onSubmit={e=>{e.preventDefault(); submitNewDefinition(hintText)}}>
+            <Word>{props.word}</Word>
+            <Hint onSubmit={e=>{e.preventDefault(); submitNewDefinition(hintText)}}>
               <input value={hintText} onChange={e=>setHintText(e.target.value)}/>
-            </TlahtolliHint>
-        </TlahtolliBody>
+            </Hint>
+        </Body>
     )
 }
 

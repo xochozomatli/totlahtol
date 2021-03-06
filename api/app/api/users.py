@@ -2,7 +2,7 @@ from flask import jsonify, request, url_for, g, abort, make_response
 from app import db
 from app.models import User
 from app.api import bp
-from app.api.auth import token_auth
+from app.api.auth import token_auth, verify_password
 from app.api.errors import error_response, bad_request
 from app.email import send_verification_email
 from datetime import datetime, timedelta
@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 @bp.route('/users/current', methods=['GET'])
 @token_auth.login_required
 def get_current_user():
-    return jsonify(g.current_user.to_dict())
+    return jsonify(g.current_user.to_dict(include_email=True))
 
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
@@ -35,7 +35,7 @@ def create_user():
     if User.query.filter_by(email=data['email']).first():
         return bad_request('there is already a user with that email')
     user = User()
-    user.from_dict(data, new_user=True)
+    user.from_dict(data)
     db.session.add(user)
     db.session.commit()
     send_verification_email(user)
@@ -64,10 +64,17 @@ def update_user(id):
     if 'username' in data and data['username'] != user.username and \
             User.query.filter_by(username=data['username']).first():
         return bad_request('please use a different username')
-    if 'email' in data and data['email'] != user.email and \
-            User.query.filter_by(email=data['email']).first():
-        return bad_request('please use a different email address')
-    user.from_dict(data, new_user=False)
+    if 'email' in data and data['email'] != user.email:
+        if User.query.filter_by(email=data['email']).first():
+            return bad_request('please use a different email address')
+        user.verified = False
+        send_verification_email(user)
+    if 'password' in data:
+        if 'old_password' not in data:
+            return bad_request('old password not sent')
+        if not verify_password(user.username, data['old_password']):
+            return bad_request('password incorrect')
+    user.from_dict(data)
     db.session.commit()
     return jsonify(user.to_dict())
 

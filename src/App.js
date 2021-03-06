@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import { AuthContext } from './context/auth'
 import { UserContext } from './context/user'
-import Landing from './pages/Landing'
-import Home from './pages/Home'
+import Landing from './components/landing/Landing'
+import Home from './components/home/Home'
 
 function App() {
   const [authToken, setAuthToken] = useState(null)

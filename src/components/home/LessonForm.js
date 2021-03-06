@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { secureRequest } from '../requestWrapper'
-import { useAuth} from '../context/auth'
-import { useUser } from '../context/user'
-import { Input, TextBox, Button, Card, CardTitle, Form } from "../style/FeedComponents"
+import { secureRequest } from '../../requestWrapper'
+import { useAuth} from '../../context/auth'
+import { useUser } from '../../context/user'
+import { Input, TextBox, Button, Card, CardTitle, Form } from "./HomeStyles"
 
 function LessonForm(){
     const [lessonTitle, setLessonTitle] = useState("")

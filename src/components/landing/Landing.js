@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
-import { Card, Form, Input, Button, Success, Error } from "../style/AuthForms"
-import { useAuth } from '../context/auth'
-import { useUser } from '../context/user'
+import { Card, Form, Input, Button, Success, Error } from "./LandingStyles"
+import { useAuth } from '../../context/auth'
+import { useUser } from '../../context/user'
 
 function Landing() {
     const { setAuthToken } = useAuth();

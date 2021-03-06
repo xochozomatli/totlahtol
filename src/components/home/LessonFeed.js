@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { Button, Card, LessonCard } from "../style/FeedComponents"
-import { Error } from "../style/AuthForms"
+import { Button, Card, LessonCard, Error } from "./HomeStyles"
 
 function LessonFeed(props){
     console.log(props.match)
