@@ -38,7 +38,7 @@ def test_cant_login_unregistered(app, driver):
     assert 'The username or password provided were incorrect!' in driver.find_elements_by_class_name('error')[0].text 
     
 
-def test_login(driver):
+def test_login_out(driver):
     username = driver.find_element_by_id('login-username')
     password = driver.find_element_by_id('login-password')
     username.clear()
@@ -50,14 +50,12 @@ def test_login(driver):
     assert driver.current_url == 'http://localhost:3000/'
 
     menu_toggle = driver.find_element_by_id('menu-toggle')
-    content_end = driver.find_element_by_id('content-end')
     assert menu_toggle.text.lower() == 'xoch'
     assert driver.find_elements('id', 'menu') == []
-    content_end.click()
+    menu_toggle.click()
     menu = driver.find_element_by_id('menu')
     menu_items = menu.find_elements_by_class_name("menu-item")
     assert len(menu_items)==2
     logout = [item for item in menu_items if "Log Out" in item.text][0] 
     logout.click()
     assert driver.current_url == 'http://localhost:3000/login'
-
