@@ -6,7 +6,7 @@ class Tlahtolli(PaginatedAPIMixin, db.Model):
     word = db.Column(db.String(120), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     definition = db.Column(db.String(120))
-    state = db.Column(db.String(10), db.CheckConstraint("state in ['known','tlahtolli','ignore']"))
+    state = db.Column(db.String(10))
 
     def to_dict(self):
         data = {

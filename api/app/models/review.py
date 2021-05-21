@@ -16,7 +16,7 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reviewer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'))
-    rating = db.Column(db.Integer, db.CheckConstraint("state in [1,-1]"))
+    rating = db.Column(db.Integer)
 
     def to_dict(self):
         data = {
