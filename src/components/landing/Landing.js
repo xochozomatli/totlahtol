@@ -74,6 +74,7 @@ function Landing() {
             <Form>
                 <Input
                 type="username"
+	        id="login-username"
                 value={loginUsername}
                 onChange={e => { setLoginUsername(e.target.value) }}
                 onKeyDown={e => { if(e.key==='Enter'){postLogin()} }}
@@ -81,6 +82,7 @@ function Landing() {
                 />
                 <Input
                 type="password"
+	        id="login-password"
                 value={loginPassword}
                 onChange={e => { setLoginPassword(e.target.value) }}
                 onKeyDown={e => { if(e.key==='Enter'){postLogin()} }}
@@ -88,10 +90,11 @@ function Landing() {
                 />
                 <Button onClick={postLogin}>Sign In</Button>
             </Form>
-                { isError &&<Error>The username or password provided were incorrect!</Error> }
+                { isError &&<Error className='error'>The username or password provided were incorrect!</Error> }
             <Form>
                 <Input
                 type="email"
+	        id="register-email"
                 value={email}
                 onChange={e => { setEmail(e.target.value) }}
                 onKeyDown={e => { if(e.key==='Enter'){postSignup()} }}
@@ -99,6 +102,7 @@ function Landing() {
                 />
                 <Input
                 type="username"
+	        id="register-username"
                 value={signupUsername}
                 onChange={e => { setSignupUsername(e.target.value) }}
                 onKeyDown={e => { if(e.key==='Enter'){postSignup()} }}
@@ -106,6 +110,7 @@ function Landing() {
                 />
                 <Input
                 type="password"
+	        id="register-password"
                 value={signupPassword}
                 onChange={e => { setSignupPassword(e.target.value) }}
                 onKeyDown={e => { if(e.key==='Enter'){postSignup()} }}
@@ -113,8 +118,8 @@ function Landing() {
                 />
                 <Button onClick={postSignup}>Sign Up</Button>
             </Form>
-                { isSuccess &&<Success>Thanks for signing up! Check your email to verify your account.</Success> }
-                { isError &&<Error></Error> }
+                { isSuccess &&<Success className='success'>Thanks for signing up! Check your email to verify your account.</Success> }
+                { isError &&<Error ></Error> }
         </Card>
     </div>
     )

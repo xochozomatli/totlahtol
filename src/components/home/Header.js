@@ -31,16 +31,16 @@ function Header(){
             <ContentStart>
                 <Title>Totlahtol</Title>
             </ContentStart>
-            <ContentEnd onClick={()=>{console.log('Toggle Clicked!!!');setShowMenu(!showMenu)}}>
-                <MenuToggle>{userData.username.charAt(0).toUpperCase()+userData.username.slice(1)}</MenuToggle>
+            <ContentEnd onClick={()=>{console.log('Toggle Clicked!!!');setShowMenu(!showMenu)}} id="content-end">
+                <MenuToggle id="menu-toggle">{userData.username.charAt(0).toUpperCase()+userData.username.slice(1)}</MenuToggle>
                 
             </ContentEnd>
             { showMenu ?
-                <AccountPopover>
-                    <PopoverItem onClick={()=>{history.push('/users/'+userData.username)}}>
+                <AccountPopover id="menu">
+                    <PopoverItem className="menu-item" onClick={()=>{history.push('/users/'+userData.username)}}>
                         <PopoverLink>Profile</PopoverLink>
                     </PopoverItem>
-                    <PopoverItem onClick={deauthUser}>
+                    <PopoverItem className="menu-item" onClick={deauthUser}>
                         <PopoverLink>Log Out</PopoverLink>
                     </PopoverItem>
                 </AccountPopover>
