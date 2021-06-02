@@ -1,43 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import { Button, Card, LessonCard, Error } from "./HomeStyles"
 
 function LessonFeed(props){
     console.log(props.match)
-    const [isError, setIsError] = useState(false)
-    const [lessonsOnPage, setLessonsOnPage] = useState([])
-    const perPage = 5 //--default on backend is 5, but explicit is better than implicit--
-    const [lessonsLinks, setLessonsLinks] = useState(
-        {
-            "next": "/api/lessons?page=1&per_page="+perPage,
-            "prev": null,
-            "self": null
-        })
-
-    function getLessonsPage(){
-        axios.get('http://localhost:5000'+lessonsLinks.next
-        ).then(result => {
-            if (result.status===200){
-                return result.data
-            } else {
-                setIsError(true)
-                Promise.reject()
-            }
-        }).then( data => {
-            setLessonsLinks(data._links)
-            let newLessons = data.items
-            setLessonsOnPage([...lessonsOnPage, ...newLessons])
-        }).catch( e => {
-            setIsError(true)
-            
-        })
-    }
-    
-    useEffect(()=>{
-        getLessonsPage()
-    }, [])
-
+    const { lessonsOnPage, setLessonsOnPage, isError, getLessonsPage } = props
     return(
     <>
         <div id="lessons">{ lessonsOnPage.map( lesson =>

@@ -21,17 +21,17 @@ function Modal(props){
 
     return(<Background>
                 <Body>
-                    <Exit onClick={closeModal}>
+                    <Exit id="modal-exit" onClick={closeModal}>
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" style={{height:'1.5rem',width:'1.5rem'}}>
                             <line x1="1" y1="22" x2="22" y2="1" stroke="black" strokeWidth="2"/>
                             <line x1="1" y1="1" x2="22" y2="22" stroke="black" strokeWidth="2"/>
                         </svg>
                     </Exit>
                     <Header>
-                        <Title>{props.title}</Title>
+                        <Title id="modal-title">{props.title}</Title>
                         { props.headerButton && props.headerButton() }
                     </Header>
-                    <Content user={props.user}>{props.children}</Content>
+                    <Content id="modal-content" user={props.user}>{props.children}</Content>
                 </Body>
             </Background>
     )

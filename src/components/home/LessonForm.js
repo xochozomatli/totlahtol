@@ -4,11 +4,12 @@ import { useAuth} from '../../context/auth'
 import { useUser } from '../../context/user'
 import { Input, TextBox, Button, Card, CardTitle, Form } from "./HomeStyles"
 
-function LessonForm(){
+function LessonForm(props){
     const [lessonTitle, setLessonTitle] = useState("")
     const [lessonText, setLessonText] = useState("")
     const { authToken, setAuthToken } = useAuth(null)
     const { userData } = useUser(null)
+    const { lessonsOnPage, setLessonsOnPage } = props
 
     function createLesson(){
         const bearer = "Bearer ".concat(authToken.token)
@@ -22,7 +23,7 @@ function LessonForm(){
             },
             headers: { Authorization: bearer }
         }
-        const succ = res => { setLessonTitle(""); setLessonText("") }
+        const succ = res => { setLessonTitle(""); setLessonText(""); setLessonsOnPage([res.data,...lessonsOnPage]).then(console.log(lessonsOnPage)) }
         const err = res => {console.log(res)}
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)
@@ -34,6 +35,7 @@ function LessonForm(){
             <Card>
                 <Form>
                     <Input
+	            id="new-lesson-title"
                     type="title"
                     value={lessonTitle}
                     onChange={e => {
@@ -42,6 +44,7 @@ function LessonForm(){
                     placeholder="What do you want to call your lesson?"
                     />
                     <TextBox
+	            id="new-lesson-textarea"
                     type="lessontext"
                     value={lessonText}
                     onChange={e => {
@@ -49,7 +52,7 @@ function LessonForm(){
                     }}
                     placeholder="Enter your lesson's text here"
                     />
-                    <Button onClick={createLesson}>Share</Button>
+                    <Button id="new-lesson-share-button" onClick={createLesson}>Share</Button>
                 </Form>
             </Card>
         </>

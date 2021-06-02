@@ -107,14 +107,14 @@ function LessonModal(props){
         const DeleteButton = () => <button onClick={deleteLesson}>{confirmedDelete ? "Are you sure?" : "Delete"}</button>
         return(
             <Modal title={lessonData.title} editing={editing} headerButton={DeleteButton} >
-                <TextBox value={lessonText} onChange={e => { setLessonText(e.target.value) }}/>
-                <Button onClick={updateLesson}>Save</Button>
-                <Button onClick={()=>{setEditing(false)}}>Cancel</Button>
+                <TextBox id="edit-lesson-textarea" value={lessonText} onChange={e => { setLessonText(e.target.value) }}/>
+                <Button id="edit-lesson-save" onClick={updateLesson}>Save</Button>
+                <Button id="edit-lesson-cancel" onClick={()=>{setEditing(false)}}>Cancel</Button>
             </Modal>
         )
     }
 
-    const EditButton = () => <button onClick={()=>{setEditing(true)}}>Edit</button>
+    const EditButton = () => <button id="edit-lesson-button" onClick={()=>{setEditing(true)}}>Edit</button>
     
     return(
         <Modal title={lessonData.title} headerButton={userData.id===lessonData.author_id ? EditButton : false} >
