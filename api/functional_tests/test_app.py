@@ -80,6 +80,7 @@ def test_login_out():
 
     driver.quit()
 
+
     
 ##########################
 ######### Feed  ##########
@@ -118,7 +119,7 @@ def test_lesson_feed():
     share_button.click()
     feed = driver.find_element_by_id('lessons')
     time.sleep(1)
-    assert len(re.findall('id="lesson[1-4]".*?by xoch', feed.get_attribute('innerHTML')))==4
+    assert len(re.findall('id="lesson[1-9]".*?by xoch', feed.get_attribute('innerHTML')))==4
 
     # Xoch logs out; Susan logs in and is greeted by Xoch's posts
     menu_toggle = driver.find_element_by_id('menu-toggle')
@@ -174,6 +175,7 @@ def test_lesson_feed():
     logout = [item for item in menu_items if "Log Out" in item.text][0] 
     logout.click()
     driver.quit()
+
 
 
 ############################
@@ -264,6 +266,7 @@ def test_use_lesson():
     time.sleep(3)
 
     lesson_link=driver.find_elements_by_partial_link_text('by susan')[0]
+    lesson_link_text = lesson_link.text
     lesson_link.click()
 
     tlahtolli = driver.find_elements_by_css_selector('div > span')[-1]
@@ -307,13 +310,37 @@ def test_use_lesson():
 
     # Susan clicks 'Edit' again, but this time she clicks 'Delete' in the upper right corner.
     # The button asks her to confirm, which she does. The modal closes and the lesson disappears from her feed.
+    delete_button = driver.find_element_by_id('delete-lesson-button')
+    assert delete_button.text=='Delete'
+    delete_button.click()
+    assert delete_button.text=='Are you sure?'
+    delete_button.click()
+    try:
+        driver.find_element_by_id('lesson-modal')
+    except:
+        pass
+    else:
+        raise Exception('lesson-modal should be closed')
+    feed = driver.find_element_by_id('lessons')
+    assert re.search('lesson_link_text', feed.get_attribute('innerHTML'))\
+            == None
 
+    menu_toggle = driver.find_element_by_id('menu-toggle')
+    menu_toggle.click()
+    menu = driver.find_element_by_id('menu')
+    menu_items = menu.find_elements_by_class_name("menu-item")
+    logout = [item for item in menu_items if "Log Out" in item.text][0] 
+    logout.click()
+    driver.quit()
 
 
 
 #################################
 ######### User Profile ##########
 #################################
+
+
+
 
 
 ###############################

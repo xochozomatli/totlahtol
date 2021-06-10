@@ -34,9 +34,3 @@ def app():
     p.kill()
     db.session.remove()
     os.unlink(db_path)
-
-@pytest.fixture(scope="module")
-def driver():
-    driver = Firefox()
-    yield driver
-    driver.quit()
