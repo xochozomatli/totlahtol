@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Button, Card, LessonCard, Error } from "./HomeStyles"
 
 function LessonFeed(props){
-    console.log(props.match)
     const { lessonsOnPage, setLessonsOnPage, isError, getLessonsPage } = props
     return(
     <>

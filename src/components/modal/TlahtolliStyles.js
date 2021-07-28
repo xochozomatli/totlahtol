@@ -14,7 +14,7 @@ const Punct = styled.span`
 const Body = styled.div`
   position: relative;
   display: inline-block;
-  margin: .2rem .2rem;
+  margin: .2rem .1rem;
   padding: .2rem .1rem 1rem .1rem;
   & > ${Hint} {
     display: ${ props => props.showHint===true ? "block" : "none"};
@@ -25,6 +25,7 @@ const Body = styled.div`
   }
   & > ${Punct} {
     border-bottom: none;
+    white-space: pre;
   }
 `
 

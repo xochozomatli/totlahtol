@@ -23,11 +23,11 @@ def get_mochi_tlahtolli():
 def create_tlahtolli():
     data = request.get_json() or {}
     print(data)
-    if 'word' not in data or 'state' not in data:
-        print("word or state not in data")
-        return bad_request('must include word and state')
+    if 'word' not in data or 'state' not in data or 'user_id' not in data:
+        print("word or state or user_id not in data")
+        return bad_request('must include word and state and user_id')
 
-    if Tlahtolli.query.filter_by(word=data['word']).first():
+    if Tlahtolli.query.filter_by(user_id=data['user_id']).filter_by(word=data['word']).first():
         print("tlahtolli \"{}\" exists!".format(data['word']))
         return bad_request("there's already a Tlahtolli for that word")
     
@@ -44,12 +44,13 @@ def create_tlahtolli():
 @bp.route('/tlahtolli/<word>', methods=['PUT'])
 @token_auth.login_required
 def update_tlahtolli(word):
+    data = request.get_json() or {}
     print("made it into update function; word={}".format(word))
-    tlahtolli = Tlahtolli.query.filter_by(word=word).first_or_404()
+    tlahtolli = Tlahtolli.query.filter_by(user_id=data['user_id']).filter_by(word=word).first_or_404()
     print("made it past 'first or 404'")
     if g.current_user.id != tlahtolli.user_id:
+        print(f"Current User: {g.current_user.id} Tlahtolli UserID: {tlahtolli.user_id}")
         return error_response(403)
-    data = request.get_json() or {}
     tlahtolli.from_dict(data)
     db.session.commit()
     return jsonify(tlahtolli.to_dict())

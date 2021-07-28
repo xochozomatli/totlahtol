@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from hashlib import md5
 import jwt
 import os
+import re
 import base64
 import threading
 from app.lesson_handler import handle_lesson
@@ -64,7 +65,7 @@ class Lesson(PaginatedAPIMixin, db.Model):
                 setattr(self, field, data[field])
 
     def get_user_tlahtolli(self, user):
-        word_set = set(''.join([char for char in self.content.lower() if char.isalnum() or char is ' ']).split())
+        word_set = set([w for w in re.split(r"[^\w'-]", self.content.lower()) if w is not ''])
         user_tlahtolli = [tlahtolli.to_dict() for tlahtolli in Tlahtolli.query.filter(Tlahtolli.user_id==user.id, Tlahtolli.word.in_(word_set)).all()]
         return user_tlahtolli
         

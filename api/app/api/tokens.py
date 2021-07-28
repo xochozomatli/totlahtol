@@ -13,7 +13,7 @@ def get_token():
     response = jsonify({ 'token':tokens_dict['token'], 'token_expiration':tokens_dict['token_expiration']})
     response.set_cookie(
         key='refresh_token', value=tokens_dict['refresh_token'],
-        expires=tokens_dict['refresh_token_expiration'], httponly=True)
+        expires=tokens_dict['refresh_token_expiration'], domain="dev.localhost")
     # response.headers.add('Set-Cookie','refresh_token='+tokens_dict['refresh_token']+'; Expires='+timezone('GMT').localize(tokens_dict['refresh_token_expiration']).strftime('%a, %d-%b-%Y %H:%M:%S %Z')+'; SameSite=Lax; Path=/')
     db.session.commit()
     return response
@@ -38,7 +38,7 @@ def refresh_token():
     response = jsonify({ 'token':tokens_dict['token'], 'token_expiration':tokens_dict['token_expiration']})
     response.set_cookie(
         key='refresh_token', value=tokens_dict['refresh_token'],
-        expires=tokens_dict['refresh_token_expiration'], httponly=True)
+        expires=tokens_dict['refresh_token_expiration'], domain="dev.localhost")
     db.session.commit()
     return response
 

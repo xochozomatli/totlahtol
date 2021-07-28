@@ -14,17 +14,38 @@ function App() {
 
   const setUser = data => {
     if (data !== null){
-      localStorage.setItem("totlahtoluser", JSON.stringify(data))
+	console.log('Data is NOT null')
+        if (localStorage.getItem("totlahtoluser") !== null){
+	    console.log('totlahtoluser is NOT null')
+	    let oldData = JSON.parse(localStorage.getItem("totlahtoluser"))
+	    if (oldData.id === data.id){
+	        console.log('User ID is the same')
+	        let newData = oldData
+	        for (const key in data){
+	            newData[key] = data[key]
+	        }
+	        localStorage.setItem("totlahtoluser", JSON.stringify(newData))
+	        setUserData(newData)
+            } else {
+	        console.log('User ID is the NOT same')
+                localStorage.setItem("totlahtoluser", JSON.stringify(data))
+	        setUserData(data)
+	    }
+	} else {
+	    console.log("totlahtoluser is null")
+	    localStorage.setItem("totlahtoluser", JSON.stringify(data))
+	    setUserData(data)
+	}
     } else {
-      localStorage.removeItem("totlahtoluser")
+	console.log("Data is null")
+        localStorage.removeItem("totlahtoluser")
+	setUserData(null)
     }
-    setUserData(data)
   }
-  console.log(authToken)
 
   useEffect(()=>{
     setLoadingState(true)
-    axios.get('http://localhost:5000/api/refresh', {withCredentials: true})
+    axios.get('http://dev.localhost:5000/api/refresh', {withCredentials: true})
       .then(res=>{setAuthToken(res.data);setLoadingState(false)})
       .catch(err=>{console.log("valio verga");
     setLoadingState(false)

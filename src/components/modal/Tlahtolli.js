@@ -11,10 +11,11 @@ function Tlahtolli(props) {
     const [active, setActive] = useState(false)
 
     function submitNewDefinition(){
+	console.log("user id: "+userData.id)
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: props.definition ? 'put' : 'post',
-            url: "http://localhost:5000/api/tlahtolli"+(props.definition ? '/'+props.word.toLowerCase() : ''),
+            url: "http://dev.localhost:5000/api/tlahtolli"+(props.definition ? '/'+props.word.toLowerCase() : ''),
             data: {
                 word: props.word.toLowerCase(),
                 user_id: userData.id,
@@ -23,12 +24,13 @@ function Tlahtolli(props) {
             },
             headers: { Authorization: bearer }
         }
+	console.log("Tlahtolli data id: "+requestConfig.data.user_id)
         const succ = res => { props.setReloadLessonData(true) }
         const err = res => {console.log(res)}
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)
     }   
-    if (props.word.match(/[^\w]+/)){
+    if (props.word.match(/[^\w-']/)){
         return <Body><Punct>{props.word}</Punct></Body>
     }
 

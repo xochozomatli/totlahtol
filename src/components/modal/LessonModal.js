@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, Redirect, useHistory, useRouteMatch } from 'react-router-dom'
 import { secureRequest } from '../../requestWrapper'
 import { useAuth } from '../../context/auth'
@@ -11,7 +11,7 @@ function LessonModal(props){
     const { authToken, setAuthToken } = useAuth()
     const { userData } = useUser()
     const [ lessonData, setLessonData ] = useState()
-    const [ lessonText, setLessonText] = useState()
+    const textBoxRef = useRef()
     const [ editing, setEditing] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
@@ -26,13 +26,12 @@ function LessonModal(props){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'get',
-            url: "http://localhost:5000/api/lessons/"+props.match.params.id,
+            url: "http://dev.localhost:5000/api/lessons/"+props.match.params.id,
             headers: { Authorization: bearer }
         }
         const succ = res => {
             if (!didCancel){
                 setLessonData(res.data)
-                setLessonText(res.data.content)
             }
             setIsLoading(false)
             setReloadLessonData(false)
@@ -65,16 +64,15 @@ function LessonModal(props){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'put',
-            url: "http://localhost:5000/api/lessons/"+match.params.id,
+            url: "http://dev.localhost:5000/api/lessons/"+match.params.id,
             data: {
-                content: lessonText
+                content: textBoxRef.current.value
             },
             headers: { Authorization: bearer }
         }
         const succ = res => {
             setLessonData(res.data)
-            setLessonText(res.data.content)
-            history.goBack()
+	    setEditing(false)
         }
         const err = res => {
             let code = res.response!==undefined ? res.response.status : "no error code to see here, folks"
@@ -91,7 +89,7 @@ function LessonModal(props){
         const bearer = " Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'delete',
-            url: "http://localhost:5000/api/lessons/"+match.params.id,
+            url: "http://dev.localhost:5000/api/lessons/"+match.params.id,
             headers: { Authorization: bearer }
         }
         const succ = res => {
@@ -105,9 +103,10 @@ function LessonModal(props){
 
     if (editing){
         const DeleteButton = () => <button id="delete-lesson-button" onClick={deleteLesson}>{confirmedDelete ? "Are you sure?" : "Delete"}</button>
+	console.log(textBoxRef.current)
         return(
             <Modal id="lesson-modal" title={lessonData.title} editing={editing} headerButton={DeleteButton} >
-                <TextBox id="edit-lesson-textarea" value={lessonText} onChange={e => { setLessonText(e.target.value) }}/>
+                <TextBox id="edit-lesson-textarea" ref={textBoxRef} defaultValue={lessonData.content}/>
                 <Button id="edit-lesson-save" onClick={updateLesson}>Save</Button>
                 <Button id="edit-lesson-cancel" onClick={()=>{setEditing(false)}}>Cancel</Button>
             </Modal>
@@ -118,9 +117,15 @@ function LessonModal(props){
     
     return(
         <Modal id="lesson-modal" title={lessonData.title} headerButton={userData.id===lessonData.author_id ? EditButton : false} >
-            {lessonData.content.match(/\w+|[^\w\s]+/g).map((word,index) =>
+            {lessonData.content.split(/([^\w'-])/).map((word,index) =>
             <Tlahtolli word={word} //TODO maybe expand these using object spread? Needs organization
-                        definition={lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()) ? lessonData.user_tlahtolli.find(obj=>obj.word===word.toLowerCase()).definition : undefined}
+                        definition={
+				lessonData.user_tlahtolli.find(obj=>
+				obj.word===word.toLowerCase())
+				? lessonData.user_tlahtolli.find(obj=>
+					obj.word===word.toLowerCase()).definition
+				: undefined
+			}
                         seen={lessonData.user_tlahtolli.map(entry=>entry.word).includes(word.toLowerCase()) ? true : false}
                         setReloadLessonData={setReloadLessonData}
                         key={index}

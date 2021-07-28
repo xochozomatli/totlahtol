@@ -16,7 +16,7 @@ function Landing() {
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     function postLogin() {
-        axios.post("http://localhost:5000/api/tokens", {}, {
+        axios.post("http://dev.localhost:5000/api/tokens", {}, {
             auth: {
                 username: loginUsername,
                 password: loginPassword
@@ -32,7 +32,7 @@ function Landing() {
             }
         }).then(data => { 
             const bearer = "Bearer ".concat(data.token)
-            return axios.get("http://localhost:5000/api/users/current", { headers: { Authorization: bearer } })
+            return axios.get("http://dev.localhost:5000/api/users/current", { headers: { Authorization: bearer } })
         }).then(result => {
             if (result.status === 200) {
                 setUserData(result.data)
@@ -47,7 +47,7 @@ function Landing() {
     function postSignup() {
         // The response to posting a new user is the user object itself as per REST guidlines
         // The backend now sends the user object with an added "token" attribute to avoid having to make two requests
-        axios.post("http://localhost:5000/api/users", {
+        axios.post("http://dev.localhost:5000/api/users", {
         username: signupUsername,
         email: email,
         password: signupPassword

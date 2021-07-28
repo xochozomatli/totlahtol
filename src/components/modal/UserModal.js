@@ -27,13 +27,13 @@ function UserModal(){
         return null
     }
 
-    console.log(userData)
+
 
     function updateUser(){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'put',
-            url: "http://localhost:5000/api/users/"+userData.id,
+            url: "http://dev.localhost:5000/api/users/"+userData.id,
             data: {
                 username: usernameFieldValue,
                 email: emailFieldValue
@@ -41,13 +41,17 @@ function UserModal(){
             headers: { Authorization: bearer }
         }
         const succ = res => {
+	    setIsError(false)
             setIsSuccess(true)
             setIsEmail(emailFieldValue!==userData.email)
             setUserData(res.data)
         }
         const err = res => {
+	    setIsSuccess(false)
             let code = res.response!==undefined ? res.response.status : "no error code to see here, folks"
             setIsError(true)
+	    setUsernameFieldValue(userData.username)
+	    setEmailFieldValue(userData.email)
         }
         const setter = setAuthToken
         secureRequest(requestConfig, succ, err, setter)
@@ -57,7 +61,7 @@ function UserModal(){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'put',
-            url: "http://localhost:5000/api/users/"+userData.id,
+            url: "http://dev.localhost:5000/api/users/"+userData.id,
             data: {
                 old_password: oldPassword,
                 password: firstNewPassword
@@ -65,11 +69,13 @@ function UserModal(){
             headers: { Authorization: bearer }
         }
         const succ = res => {
+	    setIsError(false)
             setIsSuccess(true)
         }
         const err = res => {
+	    setIsSuccess(false)
             let code = res.response!==undefined ? res.response.status : "no error code to see here, folks"
-            console.log(res.response)
+
             setIsError(true)
             setErrorMessage(res.response.data.message)
         }
@@ -83,7 +89,7 @@ function UserModal(){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'delete',
-            url: "http://localhost:5000/api/users/"+userData.id,
+            url: "http://dev.localhost:5000/api/users/"+userData.id,
             headers: { Authorization: bearer }
         }
         const succ = res => {setAuthToken(null);setUserData(null)}
@@ -92,25 +98,25 @@ function UserModal(){
         secureRequest(requestConfig, succ, err, setter)
     }
 
-    const DeleteButton = () => <button onClick={deleteUser}>{confirmedDelete ? "Are You Sure?" : "Delete Account"}</button>
+    const DeleteButton = () => <button id="profile-delete-button" onClick={deleteUser}>{confirmedDelete ? "Are You Sure?" : "Delete Account"}</button>
     return(
         <Modal title={userData.username} user={true} headerButton={DeleteButton}>
-            { isSuccess &&<Success>Profile Updated! { isEmail && "Check your email" }</Success> }
+            { isSuccess &&<Success className="success">Profile Updated! { isEmail && "Check your email" }</Success> }
             {/* { isEmail &&<Success>Check your email</Success> } */}
-            { isError &&<Error>There was a problem updating your profile: {errorMessage}</Error> }
-            <ModalField label="username" fieldValue={usernameFieldValue} setFieldValue={setUsernameFieldValue} />
-            <ModalField label="email" fieldValue={emailFieldValue} setFieldValue={setEmailFieldValue} />
+            { isError &&<Error className="error">There was a problem updating your profile: {errorMessage}</Error> }
+            <ModalField id="profile-username" label="username" fieldValue={usernameFieldValue} setFieldValue={setUsernameFieldValue} />
+            <ModalField id="profile-email" label="email" fieldValue={emailFieldValue} setFieldValue={setEmailFieldValue} />
             { changingPassword ? <>
             <ModalField type="password" label="old password" fieldValue={oldPassword} setFieldValue={setOldPassword} />
             <ModalField type="password" label="new password" fieldValue={firstNewPassword} setFieldValue={setFirstNewPassword} />
             <ModalField type="password" label="new password again" fieldValue={secondNewPassword} setFieldValue={setSecondNewPassword} />
-            <Button onClick={()=>{updatePassword(); setChangingPassword(!changingPassword)}}>Save New Password</Button>
+            <Button id='password-save' onClick={()=>{updatePassword(); setChangingPassword(!changingPassword)}}>Save New Password</Button>
             </>
             : ""
             }
-            <Button onClick={()=>{setChangingPassword(!changingPassword)}}>{changingPassword ? "Cancel" : "Change Password"}</Button>
+            <Button id='change-password-toggle' onClick={()=>{setChangingPassword(!changingPassword)}}>{changingPassword ? "Cancel" : "Change Password"}</Button>
             <br/>
-            <Button onClick={updateUser}>Save</Button>
+            <Button id='profile-save' onClick={updateUser}>Save</Button>
         </Modal>
     )
 }

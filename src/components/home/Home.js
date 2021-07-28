@@ -21,7 +21,7 @@ function Home(props) {
         })
 
     function getLessonsPage(){
-        axios.get('http://localhost:5000'+lessonsLinks.next
+        axios.get('http://dev.localhost:5000'+lessonsLinks.next
         ).then(result => {
             if (result.status===200){
                 return result.data

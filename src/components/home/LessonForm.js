@@ -15,7 +15,7 @@ function LessonForm(props){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'post',
-            url: "http://localhost:5000/api/lessons",
+            url: "http://dev.localhost:5000/api/lessons",
             data: {
                 title: lessonTitle,
                 content: lessonText,

@@ -2,9 +2,8 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { Background, Body, Content, Exit, Field, Header, Title } from './ModalStyles'
 function ModalField(props){
-    console.log(props)
     return(
-        <Field>
+        <Field id={props.id}>
             <span>{props.label}</span>
             <input value={props.fieldValue} onChange={e=>{props.setFieldValue(e.target.value)}}></input>
         </Field>
@@ -12,7 +11,6 @@ function ModalField(props){
 }
 
 function Modal(props){
-    console.log(props)
     const history = useHistory()
     const closeModal = e => {
         e.stopPropagation()

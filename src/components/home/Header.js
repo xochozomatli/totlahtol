@@ -15,7 +15,7 @@ function Header(){
         const bearer = "Bearer ".concat(authToken.token)
         const requestConfig = {
             method: 'put',
-            url: "http://localhost:5000/api/users/"+userData.id,
+            url: "http://dev.localhost:5000/api/users/"+userData.id,
             data: { action: 'deauth' },
             headers: { Authorization: bearer }
         }
