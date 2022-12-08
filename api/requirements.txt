@@ -2,7 +2,7 @@ alembic==1.0.10
 attrs==20.3.0
 Babel==2.7.0
 blinker==1.4
-certifi==2019.3.9
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 coverage==5.3.1
